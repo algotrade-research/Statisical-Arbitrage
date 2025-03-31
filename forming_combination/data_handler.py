@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import statsmodels.api as sm
 from data.get_data import *
+import os
 
 class DataHandler:
     """Handles stock data loading and clustering for statistical arbitrage.
@@ -39,7 +40,7 @@ class DataHandler:
     def __init__(self, futures, stocks, start_date, end_date, 
                  estimation_window=60, cluster_update_interval=3, 
                  futures_change_threshold=0.05, max_clusters=10,
-                 etf_list=None, etf_included=True):
+                 etf_list=None, etf_included=True,use_existing_data=False):
         self.futures = futures
         # Ensure stocks list does not include ETFs
         self.etf_list = etf_list if etf_list is not None else []
@@ -51,24 +52,50 @@ class DataHandler:
         self.futures_change_threshold = futures_change_threshold
         self.max_clusters = max_clusters
         self.etf_included = etf_included
+        self.use_existing_data = use_existing_data
         self.data = self.load_data()
         self.last_clusters = None
         self.last_cluster_day = None
         self.last_futures_price = None
+        
 
     def load_data(self):
         """Load price data for futures, stocks, and optionally ETFs.
 
+        Args:
+            use_existing (bool, optional): If True, load from existing CSV if available; 
+                                          otherwise fetch new data. Defaults to True.
+
         Returns:
             pd.DataFrame: Cleaned price data with no missing values.
         """
-        # Load data for futures and stocks
+        # Define the folder and file path
+        folder = "optimization_data"
+        os.makedirs(folder, exist_ok=True)  # Create folder if it doesn't exist
+        csv_file = os.path.join(folder, f"stock_price_{self.start_date}_to_{self.end_date}.csv")
+
+        # List of symbols to load
         symbols_to_load = [self.futures] + self.stocks
-        # If ETFs are included, add them to the symbols to load
         if self.etf_included:
             symbols_to_load.extend(self.etf_list)
+
+        if self.use_existing_data and os.path.exists(csv_file):
+            # Load data from existing CSV
+            data = pd.read_csv(csv_file, index_col=0, parse_dates=True)
+            # Ensure all expected symbols are in the loaded data
+            missing_symbols = set(symbols_to_load) - set(data.columns)
+            if not missing_symbols:
+                return data.dropna()
+            else:
+                print(f"Missing symbols {missing_symbols} in CSV; fetching new data.")
+
+        # Fetch new data if CSV doesn't exist or is incomplete
         data = get_stock_data(symbols_to_load, self.start_date, self.end_date)
-        return data.dropna()
+        data_cleaned = data.dropna()
+        
+        # Save to CSV for future use
+        data_cleaned.to_csv(csv_file)
+        return data_cleaned
 
     def compute_residuals(self, window_data):
         """Compute residuals from OLS regression of stocks (and ETFs if included) against futures.

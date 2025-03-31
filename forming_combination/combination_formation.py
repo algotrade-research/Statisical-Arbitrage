@@ -302,8 +302,8 @@ class Combination_Formations:
                     **{f'Beta_{s}': b for s, b in params['betas'].items()}
                 }
                 self.results.append(row)
-            print(f"\n=== New Combination {self.combination_id} at {current_day.date()} ===")
-            print(f"VN30F1M = {params['intercept']:.3f} + " + " + ".join([f"{b:.3f}*{s}" for s, b in params['betas'].items()]))
+            # print(f"\n=== New Combination {self.combination_id} at {current_day.date()} ===")
+            # print(f"VN30F1M = {params['intercept']:.3f} + " + " + ".join([f"{b:.3f}*{s}" for s, b in params['betas'].items()]))
 
     def get_results(self):
         """Returns the results of the strategy as a DataFrame and the stock price data.
