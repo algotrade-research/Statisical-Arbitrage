@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 from data.get_data import get_etf_price
+from tabulate import tabulate
 
 def calculate_cumulative_returns(returns_series: pd.Series) -> pd.Series:
     """Calculate cumulative returns from a series of returns.
@@ -269,7 +270,11 @@ def plot_cumulative_returns(strategy_cum_rets: pd.Series, benchmark_cum_rets: pd
     plt.yticks(size=15, fontweight="bold")
     plt.legend(fontsize=15)
     plt.show()
-
+def calculate_turnover(total_fee: float) -> float:
+    """Calculate the turnover ratio based on total fees.
+    Because each sell/buy transaction costs 0.23% of the total amount, we can calculate the turnover ratio as follows:
+    """
+    return total_fee / (.23/100)/252
 def plot_drawdown(drawdowns: pd.Series, title: str) -> None:
     """Plot the drawdown series.
 
@@ -286,7 +291,7 @@ def plot_drawdown(drawdowns: pd.Series, title: str) -> None:
     plt.yticks(size=15, fontweight="bold")
     plt.show()
 
-def calculate_metrics(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D") -> pd.DataFrame:
+def calculate_metrics(returns_df: pd.DataFrame,total_fee_ratio, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D") -> pd.DataFrame:
     """Calculate performance metrics, plot cumulative returns, and drawdown for portfolio returns vs a benchmark.
 
     Note: Despite 'benchmark_df' in the docstring, benchmark data is fetched internally using get_etf_price('VN30', start, end).
@@ -375,6 +380,9 @@ def calculate_metrics(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, tr
     strategy_cvar = calculate_cvar(strategy_annual_return, strategy_volatility)
     benchmark_cvar = calculate_cvar(benchmark_annual_return, benchmark_volatility)
 
+    #Turnover ratio
+    turnover = calculate_turnover(total_fee_ratio)
+
     # Compile metrics
     metrics_data = {
         'HPR (%)': [f"{strategy_hpr * 100:.2f}%", f"{benchmark_hpr * 100:.2f}%"],
@@ -389,6 +397,7 @@ def calculate_metrics(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, tr
         'Information Ratio': [f"{information_ratio:.2f}", "-"],
         'Beta': [f"{beta:.2f}", "-"],
         'Alpha (%)': [f"{alpha * 100:.2f}%", "-"],
+        'Turnover Ratio (%)': [f"{turnover * 100:.2f}%", "-"],
         'VaR (%)': [f"{strategy_var * 100:.2f}%", f"{benchmark_var * 100:.2f}%"],
         'cVaR (%)': [f"{strategy_cvar * 100:.2f}%", f"{benchmark_cvar * 100:.2f}%"],
         'VaR/cVaR': [f"{(strategy_cvar / strategy_var if strategy_var != 0 else np.nan):.2f}",
@@ -396,14 +405,18 @@ def calculate_metrics(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, tr
     }
     metrics_df = pd.DataFrame(metrics_data, index=['Strategy', 'VN30'])
 
-    # Print metrics
+    # Prepare data for vertical table
+    table_data = []
+    for metric in metrics_data.keys():
+        table_data.append([metric, metrics_df.loc['Strategy', metric], metrics_df.loc['VN30', metric]])
+
+    # Print metrics in a vertical table format using tabulate
     print("\nMetrics for Strategy and VN30 Benchmark\n" + "="*40)
-    print(metrics_df.to_string())
+    print(tabulate(table_data, headers=['Metric', 'Strategy', 'VN30'], tablefmt='psql', stralign='left'))
 
     # Plotting
     plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
     plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
-    plot_drawdown(benchmark_drawdowns, "DRAWDOWN (VN30)")
 
     return metrics_df
 
@@ -457,3 +470,50 @@ def calculate_yearly_returns(returns_df: pd.DataFrame) -> pd.DataFrame:
         yearly_returns.append({'Year': year, 'Yearly Return': cum_return})
 
     return pd.DataFrame(yearly_returns).sort_values('Year')
+
+
+def calculate_shapre_and_mdd(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D") -> pd.DataFrame:
+    """Calculate performance metrics, plot cumulative returns, and drawdown for portfolio returns vs a benchmark.
+
+    Note: Despite 'benchmark_df' in the docstring, benchmark data is fetched internally using get_etf_price('VN30', start, end).
+
+    Args:
+        returns_df (pd.DataFrame): Portfolio returns with 'Date' index and 'returns' column.
+        risk_free_rate (float): Annual risk-free rate. Defaults to 0.05.
+        trading_day (int): Number of trading days per year for annualization. Defaults to 252.
+        freq (str): Frequency of the data ('D' for daily). Defaults to 'D'.
+
+    Returns:
+        pd.DataFrame: Metrics for both Strategy and VN30, with percentages where applicable.
+
+    Raises:
+        ValueError: If returns_df is empty or if required columns are missing.
+    """
+    # Validate inputs
+    if returns_df.empty:
+        raise ValueError("returns_df is empty.")
+    if 'returns' not in returns_df.columns:
+        raise ValueError("returns_df must contain a 'returns' column.")
+
+    # Ensure datetime index
+    returns_df = returns_df.copy()
+    returns_df.index = pd.to_datetime(returns_df.index)
+    # Fetch benchmark data
+    start = returns_df.index[0].strftime('%Y-%m-%d')
+    end = returns_df.index[-1].strftime('%Y-%m-%d')
+    # Calculate time length
+    time_length = (returns_df.index[-1] - returns_df.index[0]).days / 365.25
+    # Cumulative returns
+    strategy_cum_rets = calculate_cumulative_returns(returns_df['returns'])
+    # HPR
+    strategy_hpr = calculate_hpr(strategy_cum_rets)
+    # Annualized returns
+    strategy_annual_return = calculate_annualized_return(strategy_hpr, time_length)
+    # Volatility
+    strategy_volatility = calculate_volatility(returns_df['returns'], trading_day)
+    # Drawdowns and related metrics
+    strategy_drawdowns = calculate_drawdowns(strategy_cum_rets)
+    strategy_max_drawdown = calculate_max_drawdown(strategy_drawdowns)
+    # Risk-adjusted metrics
+    strategy_sharpe = calculate_sharpe_ratio(strategy_annual_return, strategy_volatility, risk_free_rate)
+    return strategy_sharpe, strategy_max_drawdown
