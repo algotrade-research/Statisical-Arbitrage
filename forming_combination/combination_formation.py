@@ -3,7 +3,6 @@ import numpy as np
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
 from statsmodels.tsa.stattools import adfuller
 from scipy.stats import pearsonr
-from helper import *
 from .data_handler import DataHandler
 
 

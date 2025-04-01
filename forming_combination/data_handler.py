@@ -70,7 +70,12 @@ class DataHandler:
             pd.DataFrame: Cleaned price data with no missing values.
         """
         # Define the folder and file path
-        folder = "optimization_data"
+        
+        # Get the directory where this script/module is located
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Define the folder and file path relative to the module's directory
+        folder = os.path.join(module_dir, "optimization_data")
         os.makedirs(folder, exist_ok=True)  # Create folder if it doesn't exist
         csv_file = os.path.join(folder, f"stock_price_{self.start_date}_to_{self.end_date}.csv")
 
