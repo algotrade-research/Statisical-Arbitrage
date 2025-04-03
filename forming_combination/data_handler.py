@@ -69,14 +69,13 @@ class DataHandler:
         Returns:
             pd.DataFrame: Cleaned price data with no missing values.
         """
-        # Define the folder and file path
-        
-        # Get the directory where this script/module is located
+        # Get the directory where this script/module is located (combination_formation)
         module_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Define the folder and file path relative to the module's directory
-        folder = os.path.join(module_dir, "optimization_data")
-        os.makedirs(folder, exist_ok=True)  # Create folder if it doesn't exist
+        # Move up one level to the project2 directory, then into optimization_data
+        project_root = os.path.dirname(module_dir)  # Go up to project2
+        folder = os.path.join(project_root, "data")
+        os.makedirs(folder, exist_ok=True)  # Create folder if it doesn’t exist
         csv_file = os.path.join(folder, f"stock_price_{self.start_date}_to_{self.end_date}.csv")
 
         # List of symbols to load
@@ -94,7 +93,7 @@ class DataHandler:
             else:
                 print(f"Missing symbols {missing_symbols} in CSV; fetching new data.")
 
-        # Fetch new data if CSV doesn't exist or is incomplete
+        # Fetch new data if CSV doesn’t exist or is incomplete
         data = get_stock_data(symbols_to_load, self.start_date, self.end_date)
         data_cleaned = data.dropna()
         

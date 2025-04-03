@@ -1,9 +1,7 @@
 import pandas as pd
 import psycopg2
 import time
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
-import statsmodels.api as sm
+
 
 # Database connection parameters
 DB_PARAMS = {
