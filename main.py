@@ -55,7 +55,7 @@ csv_path = os.path.join(data_folder, "vn30_stocks.csv")
 # Check if CSV exists
 if os.path.exists(csv_path):
     # Load from CSV
-    vn30_stocks = pd.read_csv(csv_path, index_col=0)
+    vn30_stocks = pd.read_csv(csv_path, index_col=0, parse_dates=True)
     vn30_stocks.index = pd.to_datetime(vn30_stocks.index)
 else:
     # Fetch data if CSV doesn't exist
