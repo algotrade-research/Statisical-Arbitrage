@@ -30,11 +30,41 @@ pip install -r requirements.txt
 python main.py
 ```
 ## In-sample Backtesting
+## In-Sample Backtesting Results
 
-## Optimization
+#### Initial Parameters (08/2022–12/2023)
+
+| **Metric**            | **Strategy (Initial)** | **VN30**  |
+|-----------------------|------------------------|-----------|
+| HPR                   | -18.38%               | -20.80%   |
+| Excess HPR            | 2.42%                 | n/a       |
+| Annual Return         | -8.36%                | -9.54%    |
+| Annual Excess Return  | 1.18%                 | n/a       |
+| Maximum Drawdown      | 26.99%                | 42.46%    |
+| Longest Drawdown      | 477                   | 477       |
+| Turnover Ratio        | 8.25%                 | n/a       |
+| Sharpe Ratio          | -1.31                 | -0.65     |
+| Sortino Ratio         | -0.86                 | -0.54     |
+| Information Ratio     | 0.06                  | n/a       |
+
+
 
 ## Out-of-sample Backtesting
+#### Optimal Parameters (01/2024–12/2024)
 
+| **Metric**            | **Strategy (Optimal)** | **VN30**  |
+|-----------------------|------------------------|-----------|
+| HPR                   | -2.24%                | 18.83%    |
+| Excess HPR            | -21.07%               | n/a       |
+| Annual Return         | -2.25%                | 18.9%     |
+| Annual Excess Return  | -21.15%               | n/a       |
+| Maximum Drawdown      | 8.58%                 | 8.38%     |
+| Longest Drawdown      | 123                   | 71        |
+| Turnover Ratio        | 9.09%                 | n/a       |
+| Sharpe Ratio          | -1.19                 | 0.97      |
+| Sortino Ratio         | -0.32                 | 1.67      |
+| Information Ratio     | -1.75                 | n/a       |
+## Optimization
 ## Conclusion
 
 ## Reference
