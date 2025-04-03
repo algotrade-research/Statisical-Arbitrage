@@ -111,6 +111,16 @@ The new set of parameters after optimization prove to be a better
 
 ## Conclusion
 
-## Reference
+### Improvements
+The strategy’s complexity suggests several improvements for better results:
+- Optimize combination formation to reduce time and computational demands.
+- Address volatility in results by testing different capital allocation tiers and signal generation methods.
+- Improve the optimization process to avoid overfitting, limited by computational power and methodology.
 
+### Summary
+This report introduces a statistical arbitrage strategy for Vietnam, bypassing short-selling limits by pairing stock baskets with futures. Clustering and cointegration aid combination formation, and backtesting shows promise. Further enhancements are needed to manage model complexity.
+## Reference
+Avellaneda, M., \& Lee, J. (2010). Statistical arbitrage in the U.S. equities market. \textit{Quantitative Finance}, 10(7), 761–782.
+\bibitem{lu2018}
+Lu, Y., Parulekar, A., \& Xu, J. (2018). Statistical arbitrage via cointegration and clustering. Stanford University Working Paper.
   
