@@ -470,7 +470,51 @@ def calculate_yearly_returns(returns_df: pd.DataFrame) -> pd.DataFrame:
         cum_return = (1 + group['returns']).prod() - 1
         yearly_returns.append({'Year': year, 'Yearly Return': cum_return})
 
-    return pd.DataFrame(yearly_returns).sort_values('Year')
+
+def pivot_monthly_returns_to_table(monthly_returns_df: pd.DataFrame) -> pd.DataFrame:
+    """Pivot monthly returns into a table with years as columns and months as rows.
+
+    Args:
+        monthly_returns_df (pd.DataFrame): DataFrame with 'Year', 'Month', and 'Monthly Return' columns.
+
+    Returns:
+        pd.DataFrame: Pivoted table with months (JAN-DEC) as rows and years as columns.
+    """
+    if monthly_returns_df.empty:
+        raise ValueError("monthly_returns_df is empty.")
+    if not all(col in monthly_returns_df.columns for col in ['Year', 'Month', 'Monthly Return']):
+        raise ValueError("monthly_returns_df must contain 'Year', 'Month', and 'Monthly Return' columns.")
+
+    # Map month numbers to month names
+    month_map = {
+        1: 'JAN', 2: 'FEB', 3: 'MAR', 4: 'APR', 5: 'MAY', 6: 'JUN',
+        7: 'JUL', 8: 'AUG', 9: 'SEP', 10: 'OCT', 11: 'NOV', 12: 'DEC'
+    }
+    monthly_returns_df = monthly_returns_df.copy()
+    monthly_returns_df['Month'] = monthly_returns_df['Month'].map(month_map)
+
+    # Add a yearly row for totals
+    yearly_returns = monthly_returns_df.groupby('Year')['Monthly Return'].apply(
+        lambda x: (1 + x).prod() - 1
+    ).reset_index()
+    yearly_returns['Month'] = 'YEARLY'
+    yearly_returns = yearly_returns[['Year', 'Month', 'Monthly Return']]
+
+    # Concatenate the yearly returns with the monthly returns
+    monthly_returns_df = pd.concat([yearly_returns, monthly_returns_df], ignore_index=True)
+
+    # Pivot the table
+    pivoted_df = monthly_returns_df.pivot(index='Month', columns='Year', values='Monthly Return')
+
+    # Ensure all months and the 'YEARLY' row are present in the correct order
+    desired_index = ['YEARLY', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 
+                     'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+    pivoted_df = pivoted_df.reindex(desired_index)
+
+    # Format the values as percentages with 3 decimal places
+    pivoted_df = pivoted_df.applymap(lambda x: f"{x:.2%}" if pd.notnull(x) else x)
+
+    return pivoted_df
 
 
 def calculate_shapre_and_mdd(returns_df: pd.DataFrame, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D") -> pd.DataFrame:
