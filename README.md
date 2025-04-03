@@ -33,10 +33,8 @@ $$ X_{n+1} = a + b X_n + \theta_{n+1} $$
 Stanford students (Lu, Parulekar, Xu, 2018) proposed clustering and the Johansen Test for cointegration—unlike the Engel-Granger test, it handles multiple cointegration relationships—enhancing stock-future cointegration analysis.
 ## Data
 The data is taken from Algotrade Database from 06/2021-12/2024 using the daily closing price.
-Data can be created by 
-```
-loadata.py
-```
+Data is stored in the optimization_data folder.
+
 ## Installation
 
 - **Requirement:** `pip`, `virtualenv`
@@ -51,14 +49,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 ## Implementation
+ I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process.
 - **To backtest and see the result**
 ```
 python main.py
 ```
 ## In-sample Backtesting
-## In-Sample Backtesting Results
-
-#### Initial Parameters (08/2022–12/2023)
+One run time cost about 7-15 minutes depending on using existing data or not and the computer power.
+### Initial Metrics (08/2021–12/2023)
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
@@ -73,7 +71,26 @@ python main.py
 | Sortino Ratio         | -0.86                 | -0.54     |
 | Information Ratio     | 0.06                  | n/a       |
 
+### Result Discussion
+The strategy performs poorly and does not really have the market-neutral charecteristics. A possible explaination is that the hedging is not enough (beta around 0.2), and stocks usually falls larger than index when there is a sharpe downturn becuase in the index there are stocks that have small correlation with the index 
 
+## Optimization Backtesting
+### Optimization Metrics (08/2021–12/2023)
+
+| **Metric**            | **Strategy (Initial)** | **VN30**  |
+|-----------------------|------------------------|-----------|
+| HPR                   | 7.10%               | -20.80%   |
+| Excess HPR            | 26.72%                 | n/a       |
+| Annual Return         | -2.88%                | -9.54%    |
+| Annual Excess Return  | 11.50%                 | n/a       |
+| Maximum Drawdown      | 21.44%                | 42.46%    |
+| Longest Drawdown      | 339                   | 477       |
+| Turnover Ratio        | 8.25%                 | n/a       |
+| Sharpe Ratio          | -0.21                 | -0.65     |
+| Sortino Ratio         | 0.3                 | -0.54     |
+| Information Ratio     | 0.65                  | n/a       |
+### Result Discussion
+The new set of parameters after optimization prove to be a better 
 
 ## Out-of-sample Backtesting
 #### Optimal Parameters (01/2024–12/2024)
@@ -90,7 +107,7 @@ python main.py
 | Sharpe Ratio          | -1.19                 | 0.97      |
 | Sortino Ratio         | -0.32                 | 1.67      |
 | Information Ratio     | -1.75                 | n/a       |
-## Optimization
+
 ## Conclusion
 
 ## Reference
