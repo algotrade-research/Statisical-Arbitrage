@@ -291,7 +291,7 @@ def plot_drawdown(drawdowns: pd.Series, title: str) -> None:
     plt.yticks(size=15, fontweight="bold")
     plt.show()
 
-def calculate_metrics(returns_df: pd.DataFrame,total_fee_ratio, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D") -> pd.DataFrame:
+def calculate_metrics(returns_df: pd.DataFrame,total_fee_ratio, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D",plotting=False) -> pd.DataFrame:
     """Calculate performance metrics, plot cumulative returns, and drawdown for portfolio returns vs a benchmark.
 
     Note: Despite 'benchmark_df' in the docstring, benchmark data is fetched internally using get_etf_price('VN30', start, end).
@@ -415,8 +415,9 @@ def calculate_metrics(returns_df: pd.DataFrame,total_fee_ratio, risk_free_rate: 
     print(tabulate(table_data, headers=['Metric', 'Strategy', 'VN30'], tablefmt='psql', stralign='left'))
 
     # Plotting
-    plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
-    plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
+    if plotting:
+        plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
+        plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
 
     return metrics_df
 
