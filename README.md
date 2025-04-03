@@ -119,8 +119,7 @@ The strategy’s complexity suggests several improvements for better results:
 
 ### Summary
 This report introduces a statistical arbitrage strategy for Vietnam, bypassing short-selling limits by pairing stock baskets with futures. Clustering and cointegration aid combination formation, and backtesting shows promise. Further enhancements are needed to manage model complexity.
-## Reference
-Avellaneda, M., \& Lee, J. (2010). Statistical arbitrage in the U.S. equities market. \textit{Quantitative Finance}, 10(7), 761–782.
-\bibitem{lu2018}
-Lu, Y., Parulekar, A., \& Xu, J. (2018). Statistical arbitrage via cointegration and clustering. Stanford University Working Paper.
+## References
+- Avellaneda, M., & Lee, J. (2010). "Statistical arbitrage in the U.S. equities market." *Quantitative Finance*, 10(7), 761–782. [DOI: 10.1080/14697680903124632](https://doi.org/10.1080/14697680903124632)
+- Lu, Y., Parulekar, A., & Xu, J. (2018). "Statistical arbitrage via cointegration and clustering." Stanford University Working Paper.
   
