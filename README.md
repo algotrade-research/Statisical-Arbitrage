@@ -32,7 +32,11 @@ $$ X_{n+1} = a + b X_n + \theta_{n+1} $$
 
 Stanford students (Lu, Parulekar, Xu, 2018) proposed clustering and the Johansen Test for cointegration—unlike the Engel-Granger test, it handles multiple cointegration relationships—enhancing stock-future cointegration analysis.
 ## Data
-
+The data is taken from Algotrade Database from 06/2021-12/2024 using the daily closing price.
+Data can be created by 
+```
+loadata.py
+```
 ## Installation
 
 - **Requirement:** `pip`, `virtualenv`
