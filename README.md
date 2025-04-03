@@ -45,7 +45,14 @@ Data is stored in the optimization_data folder.
 
 ```
 python3 -m virtualenv venv
+```
+For Linux:
+```
 source venv/bin/activate
+```
+For Window:
+```
+.\.venv\Scripts\Activate
 ```
 - **Install the dependencies by:**
 ```
