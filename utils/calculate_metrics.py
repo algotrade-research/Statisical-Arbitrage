@@ -512,7 +512,7 @@ def pivot_monthly_returns_to_table(monthly_returns_df: pd.DataFrame) -> pd.DataF
     pivoted_df = pivoted_df.reindex(desired_index)
 
     # Format the values as percentages with 3 decimal places
-    pivoted_df = pivoted_df.applymap(lambda x: f"{x:.2%}" if pd.notnull(x) else x)
+    pivoted_df = pivoted_df.map(lambda x: f"{x:.2%}" if pd.notnull(x) else x)
 
     return pivoted_df
 
@@ -561,4 +561,4 @@ def calculate_shapre_and_mdd(returns_df: pd.DataFrame, risk_free_rate: float = 0
     strategy_max_drawdown = calculate_max_drawdown(strategy_drawdowns)
     # Risk-adjusted metrics
     strategy_sharpe = calculate_sharpe_ratio(strategy_annual_return, strategy_volatility, risk_free_rate)
-    return strategy_sharpe, strategy_max_drawdown
+    return strategy_annual_return,strategy_sharpe, strategy_max_drawdown
