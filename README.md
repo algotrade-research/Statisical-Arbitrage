@@ -79,7 +79,7 @@ The strategy performs poorly and does not really have the market-neutral charect
 The optimization process is flawed because I forgot to take the random seed at first, which results in numerous and random sharpe ratio. Also, due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
 You can run the optimization code by
 ```
-optimization.py
+python optimization.py
 ```
 ### Optimization Metrics (08/2021–12/2023)
 
