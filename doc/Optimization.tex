@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+\geometry{margin=0.7in}
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{pdflscape}%
+\usepackage[table]{xcolor}%
+\usepackage{amsmath}%
+\usepackage{color}%
+\usepackage{multirow}%
+\usepackage{longtable}%
+\usepackage{xcolor}%
+\usepackage{tabularx}%
+\usepackage{ltablex}%
+\usepackage{subcaption} % For subfigures
+
+%
+
+\title{OPTIMIZATION REPORT}
+\author{TRADING ALGORITHM NAME}
+\date{RELEASE DATE}
+
+\begin{document}
+
+\maketitle
+
+\section{Parameter Optimization Details}
+
+The following table summarizes the parameters used in the optimization process, including their types, ranges, step sizes, and optimal values determined from the trials.
+
+\begin{table}[h]
+\centering
+\caption{Parameter ranges and optimal values used in the optimization process.}
+\label{tab:parameter_ranges}
+\begin{tabular}{llrrrr}
+\toprule
+\textbf{Parameter} & \textbf{Type} & \textbf{From} & \textbf{To} & \textbf{Step} & \textbf{Optimal} \\
+\midrule
+estimation\_window & Integer & 40 & 80 & 10 & 40 \\
+min\_trading\_days\_fraction & Float & 0.5 & 0.8 & 0.15 & 0.8 \\
+top\_stocks & Integer & 3 & 9 & 3 & 6 \\
+correlation\_threshold & Float & 0.3 & 0.6 & 0.3 & 0.6 \\
+tier & Categorical & 1 & 4 & -- & 1 \\
+first\_allocation & Float & 0.4 & 0.7 & 0.15 & 0.4 \\
+adding\_allocation & Float & 0.2 & 0.3 & 0.1 & 0.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Optimization Results}
+
+Figure~\ref{fig:optimization_plots} shows the optimization history and parameter importance plots, which provide insights into the hyperparameter tuning process. The optimization history plot illustrates the objective value over trials, while the parameter importance plot highlights the relative importance of each parameter in achieving the optimal objective value.
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{optuna_trials.png}
+    \caption{Optimization history plot showing the objective value over trials.}
+    \label{fig:optimization_history}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{optuna_feature.png}
+    \caption{Parameter importance plot showing the relative importance of each parameter.}
+    \label{fig:parameter_importances}
+\end{subfigure}
+\caption{Visualization of the optimization process: (a) optimization history and (b) parameter importance.}
+\label{fig:optimization_plots}
+\end{figure}
+
+\end{document}

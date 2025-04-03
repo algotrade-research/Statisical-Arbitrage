@@ -1,0 +1,294 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+\geometry{margin=0.7in}
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{pdflscape}%
+\usepackage[table]{xcolor}%
+\usepackage{amsmath}%
+\usepackage{color}%
+\usepackage{multirow}%
+\usepackage{longtable}%
+\usepackage{xcolor}%
+\usepackage{tabularx}%
+\usepackage{ltablex}%
+%
+
+\title{BACKTESTING REPORT}
+\author{Statistical Arbitrage}
+\date{03/04/2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Objective and Constraint}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Capital Size              & 10B \\ \hline
+Return Objective          & Medium \\ \hline
+Liquidity needs           & Low \\ \hline
+Time Horizon              & Medium \\ \hline
+Other Specific Constraint & N/A \\ \hline
+\end{tabular}
+\label{tab:objective-constraint}
+\end{table}
+
+\section{Trading Algorithm}
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Algorithm Name           & Statistical Arbitrage  \\ \hline
+Target Market            & Future and Stock \\ \hline
+Decision-making schedule & Daily \\ \hline
+\end{tabular}
+\label{tab:trading-algo}
+\end{table}
+
+\section{Backtesting Assumption}
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Liquidity                 & Full \\ \hline
+Price slippage            & N/A \\ \hline
+Market impact             & N/A \\ \hline
+Simulated fill price      & N/A \\ \hline
+Transaction fee and taxes & .23 point/ .23\% \\ \hline
+Sales proceeds advance    &  Yes\\ \hline
+\end{tabular}
+\label{tab:backtesting-assumption}
+\end{table}
+
+\newgeometry{margin=0.18in}%
+\begin{landscape}%
+\section{Backtesting Performance Evaluation}%
+\label{sec:BacktestingPerformanceEvaluation}%
+
+%
+\setlength{\tabcolsep}{2pt}%
+\begin{center}%
+\begin{tabular}{|p{4.0cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}||>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|}%
+\hline%
+\textbf{Time Period}&\multicolumn{4}{c||}{\textbf{In{-}Sample}}&\multicolumn{2}{c|}{\textbf{Out{-}of{-}Sample}}\\%
+\textbf{}
+&\multicolumn{4}{c||}{<CHANGEME: INSERT PERIOD HERE>}
+&\multicolumn{2}{c|}{<CHANGEME: INSERT PERIOD HERE>}\\%
+\hline%
+&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{\textbf{Initial Parameters}}&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}||}{\textbf{Optimal Parameters}}&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{\textbf{Optimal Parameters}}\\%
+\cline{2%
+-%
+7}%
+\hline%
+&\multicolumn{2}{c|}{
+% CHANGEME: INCLUDE GRAPHIC OF INITIAL PARAMETER OF IN-SAMPLE BACKTESTING HERE
+\includegraphics[scale=0.43]{insample_param.png}
+}
+&\multicolumn{2}{c||}{
+% CHANGEME: INCLUDE GRAPHIC OF OPTIMAL PARAMETER OF IN-SAMPLE BACKTESTING HERE
+\includegraphics[scale=0.43]{optim_param.png}
+}
+&\multicolumn{2}{c|}{
+% CHANGEME: INCLUDE GRAPHIC OF OPTIMAL PARAMETER OF OUT-OF-SAMPLE BACKTESTING HERE}
+\includegraphics[scale=0.43]{optim_param.png}
+}\\%
+&\multicolumn{2}{c|}{}&\multicolumn{2}{c||}{}&\multicolumn{2}{c|}{}\\%
+&\multicolumn{2}{c|}{
+    % CHANGEME: INCLUDE THE DETAILS IN THIS TABLE
+    \begin{tabular}{|c|c|c|c|}%
+    \hline%
+    YEAR & 2021 & 2022 & 2023\\%
+    \hline%
+    \rowcolor{white}%
+    YEARLY & 1.868\% & -18.97\% & -3.6\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JAN & n.a\% & -0.1\% & 0.76\%\\%
+    \hline%
+    \rowcolor{white}%
+    FEB & n.a\% & -0.2\% & -2.45\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAR & n.a\% & -2.904\% & 2.84\%\\%
+    \hline%
+    \rowcolor{white}%
+    APR & n.a\% & -10.29\% & -2.34\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAY & n.a\% & 0.77\% & 0.87\%\\%
+    \hline%
+    \rowcolor{white}%
+    JUN & n.a\% & 0.46\% & -0.22\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JUL & n.a\% & 0.95\% & 0.15\%\\%
+    \hline%
+    \rowcolor{white}%
+    AUG & 0.00\% & -0.3\% & 0.00\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    SEP & 0.36\% & -3.5\% & -4.55\%\\%
+    \hline%
+    \rowcolor{white}%
+    OCT & 3.72\% & -5.13\% & -5.33\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    NOV & -0.16\% & 0.00\% & 5.42\%\\%
+    \hline%
+    \rowcolor{white}%
+    DEC & -1.55\% & 0.00\% & 1.68\%\\%
+    \hline%
+    \end{tabular}
+}
+&\multicolumn{2}{c||}{
+    % CHANGEME: INCLUDE THE DETAILS IN THIS TABLE
+    \begin{tabular}{|c|c|c|c|}%
+    \hline%
+    YEAR & 2021 & 2022 & 2023\\%
+    \hline%
+    \rowcolor{white}%
+    YEARLY & -2.13\% & -8.20\% & 19.22\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JAN & n.a\% & 0.19\% & 3.55\%\\%
+    \hline%
+    \rowcolor{white}%
+    FEB & n.a\% & -2.3\% & 0.19\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAR & n.a\% & -1.65\% & 8.92\%\\%
+    \hline%
+    \rowcolor{white}%
+    APR & n.a\% & -4.50\% & 0.83\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAY & n.a\% & 0.25\% & -0.43\%\\%
+    \hline%
+    \rowcolor{white}%
+    JUN & n.a\% & 2.36\% & -0.95\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JUL & n.a\% & -0.7\% & 7.28\%\\%
+    \hline%
+    \rowcolor{white}%
+    AUG & n.a\% & -0.12\% & 1.21\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    SEP & -0.53\% & -4.31\% & -0.82\%\\%
+    \hline%
+    \rowcolor{white}%
+    OCT & 0.41\% & 0.00\% & -3.56\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    NOV & -1.15\% & 1.55\% & 0.46\%\\%
+    \hline%
+    \rowcolor{white}%
+    DEC & -0.88\% & 0.95\% & 1.7\%\\%
+    \hline%
+    \end{tabular}
+}
+&\multicolumn{2}{c|}{
+    % CHANGEME: INCLUDE THE DETAILS IN THIS TABLE    
+    \begin{tabular}{|c|c|c|}%
+    \hline%
+    YEAR & 2023 & 2024\\%
+    \hline%
+    \rowcolor{white}%
+    YEARLY & 0.00\% &  -2.24\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JAN & 0.00\% &  0.62\%\\%
+    \hline%
+    \rowcolor{white}%
+    FEB & 0.00\% &  3.68\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAR & 0.00\% &  0.00\%\\%
+    \hline%
+    \rowcolor{white}%
+    APR & 0.00\% &  0.00\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    MAY & 0.00\% &  0.00\%\\%
+    \hline%
+    \rowcolor{white}%
+    JUN & 0.00\% &  -0.93\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    JUL & 0.00\% &  1.54\%\\%
+    \hline%
+    \rowcolor{white}%
+    AUG & 0.00\% &  -1.93\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    SEP & 0.00\% &  0.00\%\\%
+    \hline%
+    \rowcolor{white}%
+    OCT & 0.00\% &  -2.26\%\\%
+    \hline%
+    \rowcolor{lightgray}%
+    NOV & 0.00\% &  -2.86\%\\%
+    \hline%
+    \rowcolor{white}%
+    DEC & 0.00\% &  0.08\%\\%
+    \hline%
+    \end{tabular}
+}\\%
+&\multicolumn{2}{c|}{}&\multicolumn{2}{c||}{}&\multicolumn{2}{c|}{}\\%
+\hline%
+\end{tabular}%
+\end{center}%
+\begin{center}%
+\begin{tabular}{|p{4.0cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}||>{\centering\arraybackslash}p{3.6cm}|>{\centering\arraybackslash}p{3.6cm}|}%
+\hline%
+\textbf{Time Period}&\multicolumn{4}{c||}{\textbf{In{-}Sample}}&\multicolumn{2}{c|}{\textbf{Out{-}of{-}Sample}}\\%
+\textbf{}
+&\multicolumn{4}{c||}{<CHANGEME: INSERT PERIOD HERE>}
+&\multicolumn{2}{c|}{<CHANGEME: INSERT PERIOD HERE>}\\%
+\hline%
+&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{\textbf{Initial Parameters}}&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}||}{\textbf{Optimal Parameters}}&\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{\textbf{Optimal Parameters}}\\%
+\cline{2%
+-%
+7}%
+\hline%
+& Portfolio & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{VNINDEX} & Portfolio & Portfolio & VNINDEX\\%
+\hline%
+HPR & -18.38\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{-20.80\%} & 7.1\% & -2.24\% & 18.83\%\\%
+\hline%
+Excess HPR & 2.42\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{n/a} & 26.72\% & -21.07\% & n/a\\%
+\hline%
+Annual Return & -8.36\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{-9.54\%} & 2.88\% & -2.25\% & 18.9\%\\%
+\hline%
+Annual Excess Return & 1.18\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{n/a} & 11.5\% & -21.15\% & n/a\\%
+\hline%
+Maximum Drawdown & 26.99\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{42.46\%} & 10.16\% & 8.58\% & 8.38\%\\%
+\hline%
+Longest Drawdown & 477 & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{477} & 339 & 123 & 71\\%
+\hline%
+Turnover Ratio & 8.25\% & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{n/a} & 9.09\% & 9.09\% & n/a\\%
+\hline%
+Sharpe Ratio & -1.31 &\multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{-0.65} & -0.21 & -1.19 & 0.97\\%
+\hline%
+Sortino Ratio & -0.86 & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{-0.54} & 0.3 & -0.32 & 1.67\\%
+\hline%
+Information Ratio & 0.06 & \multicolumn{2}{>{\centering\arraybackslash}p{7.2cm}|}{n/a} & 0.65 & -1.75 & n/a\\%
+\hline%
+No. stocks in periods&\multicolumn{6}{c|}{}\\%
+\hline%
+No. held stocks in periods&\multicolumn{6}{c|}{}\\%
+\hline%
+Excess returns in periods&\multicolumn{6}{c|}{}\\%
+\hline%
+\end{tabular}%
+\end{center}%
+\pagebreak%
+\end{landscape}
+\end{document}
