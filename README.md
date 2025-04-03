@@ -22,11 +22,11 @@ $$ \text{VN30F1M} = \text{intercept} + \sum_{i} \beta_i \cdot \text{stock}_i + \
 where the residual is stationary. 
 ## Related Work
 
-Statistical arbitrage is well-documented in finance. Avellaneda and Lee (2010) modeled pairs trading with cointegration and the Ornstein-Uhlenbeck process, where the spread \( X_t \) follows:
+Statistical arbitrage is well-documented in finance. Avellaneda and Lee (2010) modeled pairs trading with cointegration and the Ornstein-Uhlenbeck process, where the spread \( $X_t$ \) follows:
 
 $$ dX_t = \kappa (\mu - X_t) \, dt + \sigma \, dW_t $$
 
-Here, \( \kappa \) is the reversion speed, \( \mu \) is the mean, and \( \sigma \) is volatility, with trades based on the s-score. O-U parameters are estimated via an AR(1) model:
+Here, \( $\kappa$ \) is the reversion speed, \( $\mu$ \) is the mean, and \( $\sigma$ \) is volatility, with trades based on the s-score. O-U parameters are estimated via an AR(1) model:
 
 $$ X_{n+1} = a + b X_n + \theta_{n+1} $$
 
