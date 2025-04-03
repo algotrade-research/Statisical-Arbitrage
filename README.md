@@ -59,7 +59,7 @@ pip install -r requirements.txt
 python load_data.py
 ```
 ## Implementation
- I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process.
+ I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process. ( More detail in Final_Report)
 
 - **To backtest and see the result**
 ```
@@ -87,49 +87,53 @@ The strategy performs poorly and does not really have the market-neutral charect
 
 ## Optimization Backtesting
 The optimization process is flawed because I forgot to take the random seed at first, which results in numerous and random sharpe ratio. Also, due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
-You can run the optimization code by
+
+-**You can run the optimization code by*
 ```
 python optimization.py
 ```
 ### Optimization Metrics (08/2021–12/2023)
+( The VN30 here and above are different because of the difference in the estimation_window, which lead to slightly different start_date.)
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | 7.10%               | -20.80%   |
-| Excess HPR            | 26.72%                 | n/a       |
-| Annual Return         | -2.88%                | -9.54%    |
-| Annual Excess Return  | 11.50%                 | n/a       |
-| Maximum Drawdown      | 21.44%                | 42.46%    |
-| Longest Drawdown      | 339                   | 477       |
-| Turnover Ratio        | 8.25%                 | n/a       |
-| Sharpe Ratio          | -0.21                 | -0.65     |
-| Sortino Ratio         | 0.3                 | -0.54     |
-| Information Ratio     | 0.65                  | n/a       |
+| HPR                   | -1.78%               | -24.29%   |
+| Excess HPR            | 22.51%                 | n/a       |
+| Annual Return         | -0.75%                | -11.01%    |
+| Annual Excess Return  | 10.26%                 | n/a       |
+| Maximum Drawdown      | 8.1%                | 42.46%    |
+| Longest Drawdown      | 422                   | 508       |
+| Turnover Ratio        | 7.53%                 | n/a       |
+| Sharpe Ratio          | -0.86                 | -0.74     |
+| Sortino Ratio         | -0.11                 | -0.63     |
+| Information Ratio     | 0.51                  | n/a       |
 ### Result Discussion
-The new set of parameters after optimization prove to be a better.
+The new set of parameters after optimization seem to be a better, although it do not generate positive profit. One causes maybe of the "high-beta" (0.2-0.4) of my strategy which makes the strategy move in correlation with the index.
 
 ## Out-of-sample Backtesting
 #### Optimal Parameters (01/2024–12/2024)
 
 | **Metric**            | **Strategy (Optimal)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | -2.24%                | 18.83%    |
-| Excess HPR            | -21.07%               | n/a       |
-| Annual Return         | -2.25%                | 18.9%     |
-| Annual Excess Return  | -21.15%               | n/a       |
-| Maximum Drawdown      | 8.58%                 | 8.38%     |
-| Longest Drawdown      | 123                   | 71        |
-| Turnover Ratio        | 9.09%                 | n/a       |
-| Sharpe Ratio          | -1.19                 | 0.97      |
-| Sortino Ratio         | -0.32                 | 1.67      |
-| Information Ratio     | -1.75                 | n/a       |
+| HPR                   | 15.31%                | 18.83%    |
+| Excess HPR            | -3.52%               | n/a       |
+| Annual Return         | 15.37%                | 18.9%     |
+| Annual Excess Return  | -3.54%               | n/a       |
+| Maximum Drawdown      | 4.32%                 | 8.38%     |
+| Longest Drawdown      | 116                   | 71        |
+| Turnover Ratio        | 10.68%                 | n/a       |
+| Sharpe Ratio          | 1.47                 | 0.97      |
+| Sortino Ratio         | 3.28                 | 1.67      |
+| Information Ratio     | -0.27                 | n/a       |
 
+### Result Discussion
+The result is good however when look closer to the graph, it still have high correlation with the index.
 ## Conclusion
 
 ### Improvements
 The strategy’s complexity suggests several improvements for better results:
 - Optimize combination formation to reduce time and computational demands.
-- Address volatility in results by testing different capital allocation tiers and signal generation methods.
+- Address relatively-high(beta) remaining in the strategy.
 - Improve the optimization process to avoid overfitting, limited by computational power and methodology.
 
 ### Summary
