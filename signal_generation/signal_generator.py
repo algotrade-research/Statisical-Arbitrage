@@ -2,12 +2,10 @@ import pandas as pd
 from typing import List, Dict, Tuple
 import numpy as np
 from datetime import timedelta, datetime
-from .ou_process import OuProcess
-from .get_allocation_tier import *
+from .ou_process import OuProcess  # Assuming this is in your project structure
 import logging
 from .get_allocation_tier import allocation_functions, get_allocation_tier_1
-pd.set_option('future.no_silent_downcasting', True)
-
+pd.set_option('future.no_silent_downcasting', False)
 
 def generate_signals(
     residuals_pivot: pd.DataFrame, ou_window: int = 60
@@ -26,7 +24,6 @@ def generate_signals(
     signal_gen.apply_ou_fitting()
     return signal_gen.ou_params
 
-
 def compute_allocations(
     ou_params: pd.DataFrame,
     residuals_pivot: pd.DataFrame,
@@ -39,18 +36,16 @@ def compute_allocations(
         ou_params (pd.DataFrame): DataFrame with OU parameters (kappa, m, sigma, s_score).
         residuals_pivot (pd.DataFrame): Pivot table of residuals.
         ou_window (int, optional): Window size for OU process fitting. Defaults to 60.
-        tier (int, optional): Allocation tier to use (1-7). Defaults to 1.
+        tier (int, optional): Allocation tier to use (1, 2, 4, 5, 7). Defaults to 1.
 
     Returns:
         pd.DataFrame: DataFrame with allocation percentages for each combination and date.
     """
-
     allocation_func = allocation_functions.get(tier, get_allocation_tier_1)
     allocation_percentages = pd.DataFrame(
         index=ou_params.index, columns=residuals_pivot.columns, dtype=float
     ).fillna(0.0)
     trend_tracker = {comb_id: False for comb_id in residuals_pivot.columns}
-    peak_s_scores = {comb_id: 0.0 for comb_id in residuals_pivot.columns}
 
     for comb_id in allocation_percentages.columns:
         s_scores = ou_params[(comb_id, "s_score")]
@@ -61,7 +56,6 @@ def compute_allocations(
                 allocation = 0.0
             else:
                 s_score = s_scores[date]
-                sigma = ou_params.loc[date, (comb_id, "sigma")] if tier == 6 else 1.0
                 if pd.isna(s_score) or pd.isna(residuals_pivot.loc[date, comb_id]):
                     allocation = 0.0
                 else:
@@ -69,33 +63,14 @@ def compute_allocations(
                         s_score < prev_s_score if not pd.isna(prev_s_score) else False
                     )
                     trend_tracker[comb_id] = is_decreasing
-                    if prev_allocation > 0 and s_score > peak_s_scores[comb_id]:
-                        peak_s_scores[comb_id] = s_score
-                    if tier == 6:
-                        allocation = allocation_func(
-                            s_score,
-                            prev_allocation,
-                            prev_s_score,
-                            is_decreasing,
-                            peak_s_scores[comb_id],
-                            sigma,
-                        )
-                    else:
-                        allocation = allocation_func(
-                            s_score,
-                            prev_allocation,
-                            prev_s_score,
-                            is_decreasing,
-                            peak_s_scores[comb_id],
-                        )
+                    allocation = allocation_func(
+                        s_score, prev_allocation, prev_s_score, is_decreasing
+                    )
                     prev_s_score = s_score if not pd.isna(s_score) else prev_s_score
-                    if allocation == 0.0:
-                        peak_s_scores[comb_id] = 0.0  # Reset peak on exit
             allocation_percentages.loc[date, comb_id] = allocation
             prev_allocation = allocation
     logging.info(f"Computed allocations with tier={tier}")
     return allocation_percentages
-
 
 def calculate_positions(
     allocation_percentages: pd.DataFrame,
@@ -124,27 +99,18 @@ def calculate_positions(
         + [f"{stock}_Position" for stock in stocks]
         + ["Num_Active_Combinations", "Active_Combination_IDs"]
     )
-    positions_df = pd.DataFrame(index=dates, columns=columns, dtype=float)
-    positions_df["Active_Combination_IDs"] = positions_df[
-        "Active_Combination_IDs"
-    ].astype(object)
-    positions_df = positions_df.fillna(0.0).infer_objects(copy=False)
+    positions_df = pd.DataFrame(index=dates, columns=columns)
+    positions_df["Active_Combination_IDs"] = positions_df["Active_Combination_IDs"].astype(object)
+    numeric_cols = [col for col in columns if col != "Active_Combination_IDs"]
+    positions_df[numeric_cols] = positions_df[numeric_cols].astype(float).fillna(0.0)
 
     for date in dates:
         if date not in allocation_percentages.index:
             continue
-        active_combs = allocation_percentages.loc[date][
-            allocation_percentages.loc[date] > 0
-        ]
+        active_combs = allocation_percentages.loc[date][allocation_percentages.loc[date] > 0]
         num_active = len(active_combs)
         active_ids = list(active_combs.index)
         positions_df.loc[date, "Num_Active_Combinations"] = num_active
-        # Ensure the column exists and has the right dtype
-        if "Active_Combination_IDs" not in positions_df.columns:
-            positions_df["Active_Combination_IDs"] = None
-        positions_df["Active_Combination_IDs"] = positions_df[
-            "Active_Combination_IDs"
-        ].astype("object")
         positions_df.loc[date, "Active_Combination_IDs"] = str(active_ids)
         max_allocation = 0.96
         if num_active == 0:
@@ -156,24 +122,19 @@ def calculate_positions(
             intended_allocations = active_combs * base_allocation
             total_intended = intended_allocations.sum()
             scale_factor = (
-                max_allocation / total_intended
-                if total_intended > max_allocation
-                else max_allocation
+                max_allocation / total_intended if total_intended > max_allocation else max_allocation
             )
             scaled_allocations = intended_allocations * scale_factor
             total_allocation = scaled_allocations.sum()
 
         positions_df.loc[date, "Total_Port_Trading"] = total_allocation
-        positions_df.loc[date, "VN30F1M_Position"] = (
-            -total_allocation * 0.20
-        )  # 20% short
+        positions_df.loc[date, "VN30F1M_Position"] = -total_allocation * 0.20  # 20% short
 
         stock_allocation = total_allocation * 0.80  # 80% to stocks
         for comb_id in active_combs.index:
             comb_allocation = (
                 scaled_allocations[comb_id] * stock_allocation / total_allocation
-                if total_allocation > 0
-                else 0
+                if total_allocation > 0 else 0
             )
             comb_row = results_df[
                 (results_df["Date"] == date) & (results_df["Combination_ID"] == comb_id)
@@ -182,19 +143,14 @@ def calculate_positions(
                 continue
 
             comb_stocks = [
-                s
-                for s in stocks
-                if f"Beta_{s}" in comb_row.columns
-                and comb_row[f"Beta_{s}"].values[0] >= 0
+                s for s in stocks if f"Beta_{s}" in comb_row.columns and comb_row[f"Beta_{s}"].values[0] >= 0
             ]
             sum_beta_price = 0.0
             valid_comb_stocks = []
             for s in comb_stocks:
                 beta = comb_row[f"Beta_{s}"].values[0]
                 price = (
-                    stock_price.loc[date, s]
-                    if s in stock_price.columns
-                    and not pd.isna(stock_price.loc[date, s])
+                    stock_price.loc[date, s] if s in stock_price.columns and not pd.isna(stock_price.loc[date, s])
                     else np.nan
                 )
                 if not pd.isna(price):
@@ -212,7 +168,6 @@ def calculate_positions(
     logging.info(f"Calculated positions for {len(dates)} dates")
     return positions_df
 
-
 def process_results_df(
     results_df: pd.DataFrame,
     stock_price: pd.DataFrame,
@@ -220,7 +175,7 @@ def process_results_df(
     ou_window: int = 60,
     tier: int = 1,
     first_allocation=0.4,
-    adding_allocation=0.15,
+    adding_allocation=0.2,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Processes the results DataFrame to generate signals, allocations, positions, and trading logs.
 
@@ -229,54 +184,41 @@ def process_results_df(
         stock_price (pd.DataFrame): DataFrame with stock and futures prices.
         stocks (List[str]): List of stock symbols.
         ou_window (int, optional): Window size for OU process fitting. Defaults to 60.
-        tier (int, optional): Allocation tier to use (1-7). Defaults to 1.
+        tier (int, optional): Allocation tier to use (1, 2, 4, 5, 7). Defaults to 1.
 
     Returns:
         Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: (results_df, positions_df, trading_log).
     """
     logging.info(f"Processing results with ou_window={ou_window}, tier={tier}")
     results_df = results_df.sort_values("Date")
-    residuals_pivot = results_df.pivot(
-        index="Date", columns="Combination_ID", values="Residual"
-    )
+    residuals_pivot = results_df.pivot(index="Date", columns="Combination_ID", values="Residual")
     ou_params = generate_signals(residuals_pivot, ou_window=ou_window)
-    allocation_percentages = compute_allocations(
-        ou_params, residuals_pivot, ou_window=ou_window, tier=tier
-    )
+    allocation_percentages = compute_allocations(ou_params, residuals_pivot, ou_window=ou_window, tier=tier)
     positions_df = calculate_positions(
-        allocation_percentages,
-        results_df,
-        stock_price,
-        stocks,
-        first_allocation,
-        adding_allocation,
+        allocation_percentages, results_df, stock_price, stocks, first_allocation, adding_allocation
     )
 
     # Add s-scores and allocations to results_df
     results_df["s_score"] = results_df.apply(
         lambda row: (
             ou_params.loc[row["Date"], (row["Combination_ID"], "s_score")]
-            if row["Date"] in ou_params.index
-            else np.nan
+            if row["Date"] in ou_params.index else np.nan
         ),
-        axis=1,
+        axis=1
     )
     results_df["Allocation"] = results_df.apply(
         lambda row: (
             allocation_percentages.loc[row["Date"], row["Combination_ID"]]
-            if row["Date"] in allocation_percentages.index
-            else 0.0
+            if row["Date"] in allocation_percentages.index else 0.0
         ),
-        axis=1,
+        axis=1
     )
 
     # Add absolute values to positions_df
     for date in positions_df.index:
         if date in stock_price.index and not pd.isna(stock_price.loc[date, "VN30F1M"]):
             vn30_pos = positions_df.loc[date, "VN30F1M_Position"]
-            positions_df.loc[date, "Abs_VN30F1M"] = (
-                abs(vn30_pos) * stock_price.loc[date, "VN30F1M"]
-            )
+            positions_df.loc[date, "Abs_VN30F1M"] = abs(vn30_pos) * stock_price.loc[date, "VN30F1M"]
             total_abs_stocks = 0.0
             for stock in stocks:
                 stock_pos = positions_df.loc[date, f"{stock}_Position"]
@@ -298,10 +240,9 @@ def process_results_df(
     trading_log["Total_Port_Trading"] = positions_df["Total_Port_Trading"]
     trading_log["Delta_VN30F1M"] = positions_df["VN30F1M_Position"].diff().fillna(0.0)
     trading_log["Action_VN30F1M"] = np.where(
-        (trading_log["Delta_VN30F1M"] > 0)
-        & (positions_df["VN30F1M_Position"].shift(1).fillna(0.0) < 0),
+        (trading_log["Delta_VN30F1M"] > 0) & (positions_df["VN30F1M_Position"].shift(1).fillna(0.0) < 0),
         "buy to cover",
-        np.where(trading_log["Delta_VN30F1M"] < 0, "sell short", "hold"),
+        np.where(trading_log["Delta_VN30F1M"] < 0, "sell short", "hold")
     )
     for stock in stocks:
         pos_col = f"{stock}_Position"
@@ -311,7 +252,7 @@ def process_results_df(
         trading_log[action_col] = np.where(
             trading_log[delta_col] > 0,
             "buy",
-            np.where(trading_log[delta_col] < 0, "sell", "hold"),
+            np.where(trading_log[delta_col] < 0, "sell", "hold")
         )
     trading_log["Num_Active_Combinations"] = positions_df["Num_Active_Combinations"]
     trading_log["Active_Combination_IDs"] = positions_df["Active_Combination_IDs"]
@@ -320,22 +261,10 @@ def process_results_df(
     for df in [positions_df, trading_log]:
         for col in df.columns:
             if (
-                col.startswith(
-                    (
-                        "Total_Port_Trading",
-                        "VN30F1M_Position",
-                        "Delta_VN30F1M",
-                        "Abs_VN30F1M",
-                        "Abs_Stocks",
-                    )
-                )
-                or col.endswith("_Position")
-                or col.startswith("Delta_")
-                or col.startswith("Abs_")
+                col.startswith(("Total_Port_Trading", "VN30F1M_Position", "Delta_VN30F1M", "Abs_VN30F1M", "Abs_Stocks"))
+                or col.endswith("_Position") or col.startswith("Delta_") or col.startswith("Abs_")
             ):
-                df[col] = df[col].apply(
-                    lambda x: round(x, 4) if pd.notna(x) and abs(x) > 1e-10 else 0.0
-                )
+                df[col] = df[col].apply(lambda x: round(x, 4) if pd.notna(x) and abs(x) > 1e-10 else 0.0)
 
     # Sort indices
     results_df.sort_values(by=["Combination_ID", "Date"], inplace=True)

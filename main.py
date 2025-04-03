@@ -24,15 +24,14 @@ from data.get_data import *
 pd.set_option('future.no_silent_downcasting', True)
 
 # Input
-estimation_window = 60
-min_trading_days=45
+estimation_window = 40
+min_trading_days=int(0.8*estimation_window) # 1/3 of estimation window
 max_clusters=10
-top_stocks=8
+top_stocks=6
 correlation_threshold=0.6
 residual_threshold=0.3
-improvement_threshold=0.03
 ou_window=estimation_window
-tier=5
+tier=1
 first_allocation=0.4    
 adding_allocation=0.2
 
@@ -61,7 +60,6 @@ combined_returns_df, combined_detail_df,average_fee_ratio = run_backtest_for_per
     top_stocks=top_stocks,
     correlation_threshold=correlation_threshold,
     residual_threshold=residual_threshold,
-    improvement_threshold=improvement_threshold,
     tier=tier,
     first_allocation=first_allocation,
     adding_allocation=adding_allocation,
@@ -73,3 +71,5 @@ print("TRAIN SET")
 calculate_metrics(train_set,average_fee_ratio, risk_free_rate=0.05)
 print("TEST SET")
 calculate_metrics(test_set,average_fee_ratio, risk_free_rate=0.05)
+print("OVERALL")
+calculate_metrics(combined_returns_df,average_fee_ratio, risk_free_rate=0.05,plotting=True)

@@ -47,7 +47,7 @@ def objective(trial):
     # Suggest parameters to tune
     estimation_window = trial.suggest_int("estimation_window", 40, 80, step=10)
     min_trading_days_fraction = trial.suggest_float(
-        "min_trading_days", 1 / 3, 2 / 3, step=1 / 6
+        "min_trading_days", 0.5, 0.8, step=0.15
     )
     min_trading_days = int(min_trading_days_fraction * estimation_window)  # Convert fraction to days
     max_clusters = 10
@@ -59,8 +59,8 @@ def objective(trial):
     ou_window = estimation_window  
     tier = trial.suggest_categorical("tier", [1, 2,3,4])
 
-    first_allocation = trial.suggest_float("first_allocation", 0.3, 0.6, step=0.1)
-    adding_allocation = trial.suggest_float("adding_allocation", 0.1, 0.3, step=0.1)
+    first_allocation = trial.suggest_float("first_allocation", 0.4, 0.7, step=0.15)
+    adding_allocation = trial.suggest_float("adding_allocation", 0.2, 0.3, step=0.1)
     # Run backtest with suggested parameters
     combined_returns_df, _, _ = run_backtest_for_periods(
         periods_df=periods_df,
@@ -96,7 +96,8 @@ def objective(trial):
     # Return tuple for multi-objective optimization (maximize Sharpe, minimize drawdown)
     return sharpe_train, max_drawdown_train
 
-# Create an Optuna study with multi-objective optimization
+
+# Create study
 study = optuna.create_study(
     directions=["maximize", "minimize"],  # Maximize Sharpe, minimize drawdown
     sampler=optuna.samplers.TPESampler(seed=SEED),
@@ -105,10 +106,59 @@ study = optuna.create_study(
     pruner=MedianPruner()
 )
 
-# Optimize with a moderate number of trials
-study.optimize(objective, n_trials=50)
+# Parameters
+total_trials = 50
+batch_size = 10
+n_batches = total_trials // batch_size  # 5 batches
 
-# Print the best results
+# CSV file name
+csv_file = "optuna_trials_final_1.csv"
+
+# Run trials in batches
+for batch in range(n_batches):
+    # Run one batch of trials
+    study.optimize(objective, n_trials=batch_size)
+    
+    # Get all trials up to this point
+    trials_df = study.trials_dataframe()
+    
+    # Rename columns to match your variable names
+    column_mapping = {
+        'values_0': 'Sharpe_train',
+        'values_1': 'Drawdown_train',
+        'user_attrs_sharpe_test': 'Sharpe_test',
+        'user_attrs_max_drawdown_test': 'Drawdown_test',
+    }
+    
+    # Rename the columns
+    trials_df.rename(columns=column_mapping, inplace=True)
+    
+    # Keep only relevant columns
+    param_columns = [col for col in trials_df.columns if col.startswith('params_')]
+    relevant_columns = ['number', 'Sharpe_train', 'Drawdown_train', 
+                       'Sharpe_test', 'Drawdown_test'] + param_columns
+    trials_df = trials_df[relevant_columns]
+    
+    # Write or append to CSV
+    if batch == 0:
+        trials_df.to_csv(csv_file, mode='w', index=False)
+    else:
+        # Only append the new trials (last batch_size trials)
+        new_trials_df = trials_df.tail(batch_size)
+        new_trials_df.to_csv(csv_file, mode='a', header=False, index=False)
+    
+    # Print batch progress
+    print(f"Batch {batch+1}/{n_batches} completed ({(batch+1)*batch_size}/{total_trials} trials)")
+    print(f"Latest batch results:")
+    for _, row in trials_df.tail(batch_size).iterrows():
+        print(f"Trial {int(row['number'])}: "
+              f"Sharpe Train: {row['Sharpe_train']}, "  # Fixed: was 'best_sharpe_train'
+              f"Drawdown Train: {row['Drawdown_train']}, "  # Fixed: was 'best_drawdown_train'
+              f"Sharpe Test: {row['Sharpe_test']}, "  # Fixed: was 'best_sharpe_test'
+              f"Drawdown Test: {row['Drawdown_test']}")  # Fixed: was 'best_drawdown_test'
+    print("-" * 50)
+
+# Get and print best trial results
 best_trial = study.best_trials[0]  # Get the best trial (Pareto optimal)
 best_params = best_trial.params
 best_sharpe_train = best_trial.values[0]
@@ -116,32 +166,12 @@ best_drawdown_train = best_trial.values[1]
 best_sharpe_test = best_trial.user_attrs["sharpe_test"]
 best_drawdown_test = best_trial.user_attrs["max_drawdown_test"]
 
+print("\nFinal Best Results:")
 print(f"Best Train Sharpe Ratio: {best_sharpe_train}")
 print(f"Best Train Max Drawdown: {best_drawdown_train}")
 print(f"Test Sharpe Ratio: {best_sharpe_test}")
 print(f"Test Max Drawdown: {best_drawdown_test}")
 print(f"Best Parameters: {best_params}")
-# Save all trials to CSV with custom column names matching variable names
-trials_df = study.trials_dataframe()
-
-# Rename columns to match your variable names
-column_mapping = {
-    'values_0': 'best_sharpe_train',
-    'values_1': 'best_drawdown_train',
-    'user_attrs_sharpe_test': 'best_sharpe_test',
-    'user_attrs_max_drawdown_test': 'best_drawdown_test',
-}
-
-# Rename the columns in the DataFrame
-trials_df.rename(columns=column_mapping, inplace=True)
-
-# Keep only relevant columns (optional, remove if you want all columns)
-relevant_columns = ['number', 'best_sharpe_train', 'best_drawdown_train', 
-                   'best_sharpe_test', 'best_drawdown_test'] + [f'params_{p}' for p in best_params.keys()]
-trials_df = trials_df[relevant_columns]
-
-# Save to CSV
-trials_df.to_csv("optuna_trials.csv", index=False)
 # Visualize parameter importances (for Sharpe only, as it's multi-objective)
 optuna.visualization.plot_param_importances(study, target=lambda t: t.values[0]).show()
 
