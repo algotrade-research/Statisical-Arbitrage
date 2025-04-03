@@ -28,7 +28,7 @@ DEFAULT_PARAMS = {
 }
 
 # Load parameters (use default if file not found)
-param_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parameters", "optimization.json")
+param_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parameters", "optimization.json")#may change to inital.json
 try:
     with open(param_path, "r") as f:
         train_params = json.load(f)
@@ -46,11 +46,21 @@ tier = train_params["tier"]
 first_allocation = train_params["first_allocation"]
 adding_allocation = train_params["adding_allocation"]
 correlation_threshold = train_params["correlation_threshold"]
-
 ou_window = estimation_window
 
-vn30_stocks = get_vn30("2021-06-01", "2025-01-10")
-vn30_stocks.index = pd.to_datetime(vn30_stocks.index)
+
+data_folder = "data"
+csv_path = os.path.join(data_folder, "vn30_stocks.csv")
+
+# Check if CSV exists
+if os.path.exists(csv_path):
+    # Load from CSV
+    vn30_stocks = pd.read_csv(csv_path, index_col=0)
+    vn30_stocks.index = pd.to_datetime(vn30_stocks.index)
+else:
+    # Fetch data if CSV doesn't exist
+    vn30_stocks = get_vn30("2021-06-01", "2025-01-10")
+    vn30_stocks.index = pd.to_datetime(vn30_stocks.index)
 
 # Step 1: Generate the periods DataFrame with ETFs
 etfs_list = ["FUEVFVND", "FUESSVFL", "E1VFVN30", "FUEVN100"]
