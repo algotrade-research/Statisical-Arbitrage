@@ -76,6 +76,7 @@ One run time cost about 7-15 minutes depending on using existing data or not and
 The strategy performs poorly and does not really have the market-neutral charecteristics. A possible explaination is that the hedging is not enough (beta around 0.2), and stocks usually falls larger than index when there is a sharpe downturn becuase in the index there are stocks that have small correlation with the index 
 
 ## Optimization Backtesting
+The optimization process is flawed because I forgot to take the random seed at first, which results in numerous and random sharpe ratio. Also, due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
 ### Optimization Metrics (08/2021–12/2023)
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
@@ -91,7 +92,7 @@ The strategy performs poorly and does not really have the market-neutral charect
 | Sortino Ratio         | 0.3                 | -0.54     |
 | Information Ratio     | 0.65                  | n/a       |
 ### Result Discussion
-The new set of parameters after optimization prove to be a better 
+The new set of parameters after optimization prove to be a better.
 
 ## Out-of-sample Backtesting
 #### Optimal Parameters (01/2024–12/2024)
