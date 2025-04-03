@@ -35,7 +35,10 @@ Stanford students (Lu, Parulekar, Xu, 2018) proposed clustering and the Johansen
 The data is taken from Algotrade Database from 06/2021-12/2024 using the daily closing price.
 Data is stored in the optimization_data folder.
 
-## Installation
+
+## Implementation
+ I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process.
+### Installation
 
 - **Requirement:** `pip`, `virtualenv`
 - **Create and source new virtual environment in the current working directory with command**
@@ -48,8 +51,6 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-## Implementation
- I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process.
 - **To backtest and see the result**
 ```
 python main.py
