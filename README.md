@@ -19,9 +19,18 @@ In Vietnam, short-selling stocks is banned, making pairs trading unfeasible. Ins
 
 $$ \text{VN30F1M} = \text{intercept} + \sum_{i} \beta_i \cdot \text{stock}_i + \text{residual} $$
 
-where the residual is stationary. This adapts statistical arbitrage to Vietnam’s market, offering a profitable, low-risk option for investors.
+where the residual is stationary. 
 ## Related Work
 
+Statistical arbitrage is well-documented in finance. Avellaneda and Lee (2010) modeled pairs trading with cointegration and the Ornstein-Uhlenbeck process, where the spread \( X_t \) follows:
+
+$$ dX_t = \kappa (\mu - X_t) \, dt + \sigma \, dW_t $$
+
+Here, \( \kappa \) is the reversion speed, \( \mu \) is the mean, and \( \sigma \) is volatility, with trades based on the s-score. O-U parameters are estimated via an AR(1) model:
+
+$$ X_{n+1} = a + b X_n + \theta_{n+1} $$
+
+Stanford students (Lu, Parulekar, Xu, 2018) proposed clustering and the Johansen Test for cointegration—unlike the Engel-Granger test, it handles multiple cointegration relationships—enhancing stock-future cointegration analysis.
 ## Data
 
 ## Installation
