@@ -4,7 +4,7 @@ from statsmodels.tsa.vector_ar.vecm import coint_johansen
 from statsmodels.tsa.stattools import adfuller
 from scipy.stats import pearsonr
 from .data_handler import DataHandler
-
+np.random.seed(42)  # Set seed for reproducibility
 
 
 class Combination_Formations:    
@@ -75,7 +75,7 @@ class Combination_Formations:
                     candidates.append((stock, result.lr1[0]))
             except Exception as e:
                 print(f"Pairwise test failed for {stock}: {e}")
-        candidates.sort(key=lambda x: x[1], reverse=True)
+        candidates.sort(key=lambda x: (-x[1], x[0])) # Sort by trace stat (desc), then stock name
         return [stock for stock, _ in candidates]
 
     def build_combination_greedy(self, window_data, candidates):
@@ -92,10 +92,11 @@ class Combination_Formations:
             return []
         best_selected = []
         best_trace_stat = -np.inf
-        for start_stock in candidates[:self.top_stocks]:  # Try top 3 starting points
+        for start_stock in candidates[:self.top_stocks]:  # Top stocks are already sorted
             selected = [start_stock]
             current_trace_stat = coint_johansen(window_data[[self.futures, start_stock]], det_order=1, k_ar_diff=1).lr1[0]
-            for stock in [s for s in candidates if s != start_stock]:
+            remaining = sorted([s for s in candidates if s != start_stock])  # Sort remaining candidates
+            for stock in remaining:
                 if len(selected) >= self.max_stocks:
                     break
                 test_subset = selected + [stock]
@@ -104,7 +105,7 @@ class Combination_Formations:
                     if result.lr1[0] <= result.cvt[0, self.confidence_level]:
                         continue
                     improvement = (result.lr1[0] - current_trace_stat) / current_trace_stat
-                    if improvement < self.improvement_threshold:    
+                    if improvement < self.improvement_threshold:
                         continue
                     evec = result.evec[:, 0]
                     betas = -evec[1:] / evec[0]

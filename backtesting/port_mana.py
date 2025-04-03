@@ -1,16 +1,7 @@
 import pandas as pd
-import yfinance as yf
-from typing import List, Dict, Tuple
+from typing import Dict, Tuple
 import numpy as np
-from statsmodels.tsa.vector_ar.vecm import coint_johansen
-from statsmodels.tsa.stattools import adfuller
-import os
-from statsmodels.tsa.api import AutoReg
-from scipy.stats import pearsonr
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
-import statsmodels.api as sm
-import matplotlib.pyplot as plt
+
 
 
 class PortfolioManager:
@@ -30,7 +21,7 @@ class PortfolioManager:
 
     def __init__(
         self,
-        initial_balance: float = 1000000000,
+        initial_balance: float = 10**7,
         vn30_fee_per_point: float = 0.23,
         stock_fee_rate: float = 0.0023,
         contract_size: int = 100,
