@@ -66,6 +66,8 @@ python load_data.py
 python main.py
 ```
 ## In-sample Backtesting
+![Insample Return](doc/img/insample_param.png)
+![Insample Return](doc/img/insample_return.png)
 One run time cost about 7-15 minutes depending on using existing data or not and the computer power.
 ### Initial Metrics (08/2021–12/2023)
 
