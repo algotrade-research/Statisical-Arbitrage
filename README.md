@@ -66,10 +66,15 @@ python load_data.py
 python main.py
 ```
 ## In-sample Backtesting
+
 -**Parameters**
+
 ![Insample Parameters](doc/img/insample_param.png)
+
 -**Cumulative Return**
+
 ![Insample Return](doc/img/insample_return.png)
+
 One run time cost about 7-15 minutes depending on using existing data or not and the computer power.
 ### Initial Metrics (08/2021–12/2023)
 
@@ -90,7 +95,7 @@ One run time cost about 7-15 minutes depending on using existing data or not and
 The strategy performs poorly and does not really have the market-neutral charecteristics. A possible explaination is that the hedging is not enough (beta around 0.2), and stocks usually falls larger than index when there is a sharpe downturn becuase in the index there are stocks that have small correlation with the index 
 
 ## Optimization Backtesting
-The optimization process is flawed because I forgot to take the random seed at first, which results in numerous and random sharpe ratio. Also, due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
+Due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
 
 -**You can run the optimization code by*
 ```
@@ -98,10 +103,15 @@ python optimization.py
 ```
 ### Optimization Metrics (08/2021–12/2023)
 ( The VN30 here and above are different because of the difference in the estimation_window, which lead to slightly different start_date.)
+
 -**Parameters**
+
 ![Optimization Parameters](doc/img/optim_param.png)
+
 -**Cumulative Return**
+
 ![Optimization Return](doc/img/op_return.png)
+
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
@@ -121,6 +131,7 @@ The new set of parameters after optimization seem to be a better, although it do
 ## Out-of-sample Backtesting
 
 -**Cumulative Return**
+
 ![Outsample Return](doc/img/outsample_return.png)
 
 | **Metric**            | **Strategy (Optimal)** | **VN30**  |
