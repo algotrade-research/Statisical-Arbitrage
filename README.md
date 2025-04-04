@@ -66,7 +66,9 @@ python load_data.py
 python main.py
 ```
 ## In-sample Backtesting
-![Insample Return](doc/img/insample_param.png)
+-**Parameters**
+![Insample Parameters](doc/img/insample_param.png)
+-**Cumulative Return**
 ![Insample Return](doc/img/insample_return.png)
 One run time cost about 7-15 minutes depending on using existing data or not and the computer power.
 ### Initial Metrics (08/2021–12/2023)
@@ -96,6 +98,10 @@ python optimization.py
 ```
 ### Optimization Metrics (08/2021–12/2023)
 ( The VN30 here and above are different because of the difference in the estimation_window, which lead to slightly different start_date.)
+-**Parameters**
+![Optimization Parameters](doc/img/optim_param.png)
+-**Cumulative Return**
+![Optimization Return](doc/img/op_return.png)
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
@@ -113,7 +119,11 @@ python optimization.py
 The new set of parameters after optimization seem to be a better, although it do not generate positive profit. One causes maybe of the "high-beta" (0.2-0.4) of my strategy which makes the strategy move in correlation with the index.
 
 ## Out-of-sample Backtesting
-#### Optimal Parameters (01/2024–12/2024)
+
+-**Parameters**
+![Outsample Parameters](doc/img/outsample_param.png)
+-**Cumulative Return**
+![Outsample Return](doc/img/outsample_return.png)
 
 | **Metric**            | **Strategy (Optimal)** | **VN30**  |
 |-----------------------|------------------------|-----------|
