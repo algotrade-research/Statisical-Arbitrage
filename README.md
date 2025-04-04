@@ -48,7 +48,7 @@ source venv/bin/activate
 ```
 - **For Window:**
 ```
-.\.venv\Scripts\Activate
+.\venv\Scripts\Activate.ps1
 ```
 - **Install the dependencies by:**
 ```
