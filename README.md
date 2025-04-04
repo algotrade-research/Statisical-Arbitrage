@@ -120,8 +120,6 @@ The new set of parameters after optimization seem to be a better, although it do
 
 ## Out-of-sample Backtesting
 
--**Parameters**
-![Outsample Parameters](doc/img/outsample_param.png)
 -**Cumulative Return**
 ![Outsample Return](doc/img/outsample_return.png)
 
@@ -137,6 +135,9 @@ The new set of parameters after optimization seem to be a better, although it do
 | Sharpe Ratio          | 1.47                 | 0.97      |
 | Sortino Ratio         | 3.28                 | 1.67      |
 | Information Ratio     | -0.27                 | n/a       |
+
+-**Overall**
+![Overall Return](doc/img/overall_metrics.png)
 
 ### Result Discussion
 The result is good however when look closer to the graph, it still have high correlation with the index.
