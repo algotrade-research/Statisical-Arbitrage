@@ -17,10 +17,10 @@ import os
 
 # Default parameters (embedded in the code)
 DEFAULT_PARAMS = {
-    "estimation_window": 40,
-    "min_trading_days": 32,  # 0.8 * estimation_window
+    "estimation_window": 50,
+    "min_trading_days": 25,  # 0.8 * estimation_window
     "max_clusters": 10,
-    "top_stocks": 6,
+    "top_stocks": 3,
     "tier": 1,
     "first_allocation": 0.4,
     "adding_allocation": 0.2,

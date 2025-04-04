@@ -120,8 +120,12 @@ total_trials = 50
 batch_size = 10
 n_batches = total_trials // batch_size  # 5 batches
 
-# CSV file name
-csv_file = "optuna_trials_final_real.csv"
+# CSV file name in data folder
+csv_file = os.path.join(script_dir, "data", "optuna_trials_final_real.csv")
+
+# Ensure the data directory exists
+os.makedirs(os.path.dirname(csv_file), exist_ok=True)
+
 
 # Run trials in batches
 for batch in range(n_batches):
