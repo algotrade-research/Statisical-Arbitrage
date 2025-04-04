@@ -148,6 +148,7 @@ The new set of parameters after optimization seem to be a better, although it do
 | Information Ratio     | -0.27                 | n/a       |
 
 -**Overall**
+
 ![Overall Return](doc/img/overall_metrics.png)
 
 ### Result Discussion
