@@ -78,7 +78,18 @@ python main.py
 
 -**Parameters**
 
-![Insample Parameters](doc/img/insample_param.png)
+```
+{
+    "estimation_window": 60,
+    "min_trading_days": 30,
+    "max_clusters": 10,
+    "top_stocks": 6,
+    "tier": 1,
+    "first_allocation": 0.4,
+    "adding_allocation": 0.4,
+    "correlation_threshold": 0.6
+  }
+```
 
 -**Cumulative Return**
 
@@ -114,8 +125,18 @@ python optimization.py
 ( The VN30 here and above are different because of the difference in the estimation_window, which lead to slightly different start_date.)
 
 -**Parameters**
-
-![Optimization Parameters](doc/img/optim_param.png)
+```
+{
+    "estimation_window": 50,
+    "min_trading_days": 25,
+    "max_clusters": 10,
+    "top_stocks": 3,
+    "tier": 1,
+    "first_allocation": 0.4,
+    "adding_allocation": 0.2,
+    "correlation_threshold": 0.6
+  }
+```
 
 -**Cumulative Return**
 
