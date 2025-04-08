@@ -1,4 +1,4 @@
-![Static Badge](https://img.shields.io/badge/PLUTUS-verified_55%25-yellow)
+![Static Badge](https://img.shields.io/badge/PLUTUS-verified_60%25-yellow)
 
 # Statistical Arbitrage
 
