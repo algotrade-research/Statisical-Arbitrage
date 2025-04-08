@@ -70,10 +70,6 @@ python load_data.py
 ## Implementation
  I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process. ( More detail in Final_Report)
 
-- **To backtest and see the result**
-```
-python main.py
-```
 ## In-sample Backtesting
 -**Run by**
 ```
