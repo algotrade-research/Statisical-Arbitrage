@@ -14,6 +14,7 @@ import numpy as np
 np.random.seed(42)
 import json
 import os
+import sys
 
 # Default parameters (embedded in the code)
 DEFAULT_PARAMS = {
@@ -27,15 +28,34 @@ DEFAULT_PARAMS = {
     "correlation_threshold": 0.6
 }
 
-# Load parameters (use default if file not found)
-param_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parameters", "optimization.json")#may change to inital.json
-try:
-    with open(param_path, "r") as f:
-        train_params = json.load(f)
-    print("Loaded parameters from optimization.json")
-except FileNotFoundError:
-    print("Warning: parameters/optimization.json not found. Using default parameters.")
-    train_params = DEFAULT_PARAMS
+# Function to load parameters based on mode
+def load_parameters(mode):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    param_file = f"{mode}.json"
+    param_path = os.path.join(base_dir, "parameters", param_file)
+    
+    try:
+        with open(param_path, "r") as f:
+            params = json.load(f)
+        print(f"Loaded parameters from {param_file}")
+    except FileNotFoundError:
+        print(f"Warning: {param_path} not found. Using default parameters.")
+        params = DEFAULT_PARAMS
+    return params
+
+# Check command-line argument
+if len(sys.argv) < 2:
+    print("Error: Please specify a mode ('initial' or 'optimization').")
+    print("Example: python main.py initial")
+    sys.exit(1)
+
+mode = sys.argv[1].lower()
+if mode not in ["initial", "optimization"]:
+    print("Error: Mode must be 'initial' or 'optimization'.")
+    sys.exit(1)
+
+# Load parameters based on the mode
+train_params = load_parameters(mode)
 
 # Access parameters
 estimation_window = train_params["estimation_window"]
