@@ -41,21 +41,25 @@ Data is stored in the data folder.
 - **Requirement:** `pip`, `virtualenv`
 - **Create and source new virtual environment in the current working directory with command**
 
-```
-python3 -m virtualenv venv
-```
-- **For Linux:**
-```
+- **On Linux**
+```bash
+# Create the virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
 source venv/bin/activate
-```
-- **For Window:**
-```
-.\venv\Scripts\Activate.ps1
-```
 - **Install the dependencies by:**
 ```
+- **On Window**
+```
+# Create the virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
 - **To load the data:**
 ```
 python load_data.py
