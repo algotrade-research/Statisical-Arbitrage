@@ -65,15 +65,16 @@ pip install -r requirements.txt
 
 - **To load the data:**
 ```
-python load_data.py
+python load_data.py 
 ```
 ## Implementation
  I formed combinations by employing clustering techniques, the Johansen cointegration test, and generate signals by using the s-score of the Ornstein-Uhlenbeck process. ( More detail in Final_Report)
 
 ## In-sample Backtesting
 -**Run by**
+(Use existing data)
 ```
-python main.py initial
+python main.py initial use_data
 ```
 
 -**Parameters**
@@ -140,8 +141,9 @@ python optimization.py
   }
 ```
 -**Run the backtesting with optimization parameters by**
+(Use existing data)
 ```
-python main.py optimization
+python main.py optimization use_data
 ```
 
 -**Cumulative Return**
