@@ -1,3 +1,5 @@
+![Static Badge](https://img.shields.io/badge/PLUTUS-verified_55%25-yellow)
+
 # Statistical Arbitrage
 
 ## Abstract
