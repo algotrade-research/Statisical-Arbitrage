@@ -75,6 +75,10 @@ python load_data.py
 python main.py
 ```
 ## In-sample Backtesting
+-**Run by**
+```
+python main.py initial
+```
 
 -**Parameters**
 
@@ -117,7 +121,7 @@ The strategy performs poorly and does not really have the market-neutral charect
 ## Optimization Backtesting
 Due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
 
--**You can run the optimization code by*
+-**Run by*
 ```
 python optimization.py
 ```
@@ -136,6 +140,10 @@ python optimization.py
     "adding_allocation": 0.2,
     "correlation_threshold": 0.6
   }
+```
+-**Run by**
+```
+python main.py optimization
 ```
 
 -**Cumulative Return**
