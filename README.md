@@ -48,7 +48,7 @@ python3 -m venv venv
 
 # Activate the virtual environment
 source venv/bin/activate
-- **Install the dependencies by:**
+
 ```
 - **On Window**
 ```
@@ -57,6 +57,9 @@ python -m venv venv
 
 # Activate the virtual environment
 venv\Scripts\activate
+```
+- **Install the dependencies by:**
+```
 pip install -r requirements.txt
 ```
 
