@@ -115,9 +115,11 @@ One run time cost about 7-15 minutes depending on using existing data or not and
 The strategy performs poorly and does not really have the market-neutral charecteristics. A possible explaination is that the hedging is not enough (beta around 0.2), and stocks usually falls larger than index when there is a sharpe downturn becuase in the index there are stocks that have small correlation with the index 
 
 ## Optimization Backtesting
-Due to limited computational power and inapporiate methodology, the parameters are in high risk of overfitting.
+Due to limited computational power and inapporiate methodology, I only ran 50 trial with 5 bathces of 10 triasls, so the parameters are in high risk of overfitting.
 
--**Run by*
+**It can take 10-15 minutes per trial, which can make it 10 hours for an entire process. Becareful**
+
+-**Run the optimization process by**
 ```
 python optimization.py
 ```
@@ -137,7 +139,7 @@ python optimization.py
     "correlation_threshold": 0.6
   }
 ```
--**Run by**
+-**Run the backtesting with optimization parameters by**
 ```
 python main.py optimization
 ```
