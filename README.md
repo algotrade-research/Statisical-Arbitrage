@@ -192,7 +192,7 @@ python main.py out_sample use_data
 | Information Ratio     | -0.64                 | n/a       |
 
 -**Overall**
-
+![Overall Return](doc/img/overall_return.png)
 -**Run by**
 ```
 python main.py overall use_data
