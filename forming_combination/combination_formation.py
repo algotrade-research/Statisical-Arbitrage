@@ -216,7 +216,7 @@ class Combination_Formations:
             for cluster in clusters:
                 cluster_candidates = self.get_pairwise_candidates(estimation_data, cluster)[:3]
                 top_candidates.extend(cluster_candidates)
-            top_candidates = list(set(top_candidates))
+            top_candidates = sorted(list(set(top_candidates)))
 
             if top_candidates:
                 cross_selected = self.build_combination_greedy(estimation_data, top_candidates)

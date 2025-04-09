@@ -4,6 +4,8 @@ from sklearn.metrics import silhouette_score
 import statsmodels.api as sm
 from data.get_data import *
 import os
+import numpy as np
+np.random.seed(42)
 
 class DataHandler:
     """Handles stock data loading and clustering for statistical arbitrage.
@@ -40,7 +42,7 @@ class DataHandler:
     def __init__(self, futures, stocks, start_date, end_date, 
                  estimation_window=60, cluster_update_interval=3, 
                  futures_change_threshold=0.05, max_clusters=10,
-                 etf_list=None, etf_included=True,use_existing_data=False):
+                 etf_list=None, etf_included=True,use_existing_data=True):
         self.futures = futures
         # Ensure stocks list does not include ETFs
         self.etf_list = etf_list if etf_list is not None else []
@@ -167,13 +169,13 @@ class DataHandler:
                 best_k = min(2, len(stock_list))  # Ensure at least 2 if possible
                 best_score = -1
                 for k in range(2, min(self.max_clusters + 1, len(stock_list))):
-                    kmeans = KMeans(n_clusters=k, random_state=0).fit(X)
+                    kmeans = KMeans(n_clusters=k, random_state=42).fit(X)
                     if kmeans.n_clusters > 1:
                         score = silhouette_score(X, kmeans.labels_)
                         if score > best_score:
                             best_score = score
                             best_k = k
-                kmeans = KMeans(n_clusters=best_k, random_state=0).fit(X)
+                kmeans = KMeans(n_clusters=best_k, random_state=42).fit(X)
                 stock_clusters = {i: [] for i in range(best_k)}
                 for stock, label in zip(stock_list, kmeans.labels_):
                     stock_clusters[label].append(stock)
