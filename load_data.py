@@ -6,8 +6,12 @@ import os
 import numpy as np
 
 # Fetch VN30 stock data
-vn30_stocks = get_vn30("2021-06-01", "2025-01-10")
+vn30_stocks = get_vn30("2021-06-01", "2025-01-01")
 vn30_stocks.index = pd.to_datetime(vn30_stocks.index)
+
+# Fetch VN30 Price data
+index_price = get_etf_price("VN30", "2021-06-01", "2025-01-01")
+index_price.index = pd.to_datetime(index_price.index)
 
 # Get the directory where this script (load_data.py) is located (Project 2/)
 module_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,12 +21,15 @@ folder = os.path.join(module_dir, "data")
 os.makedirs(folder, exist_ok=True)  # Create folder if it doesn’t exist
 
 # Define the save path
-save_path = os.path.join(folder, "vn30_stocks.csv")
+save_path_1 = os.path.join(folder, "vn30_stocks.csv")
+save_path_2 = os.path.join(folder, "index_price.csv")
 
 # Save the file
-vn30_stocks.to_csv(save_path, index=True)
+vn30_stocks.to_csv(save_path_1, index=True)
+index_price.to_csv(save_path_2, index=True)
 
-print(f"File saved to {os.path.abspath(save_path)}")
+print(f"File saved to {os.path.abspath(save_path_1)}")
+print(f"File saved to {os.path.abspath(save_path_2)}")
 
 start_date = "2021-06-01"
 end_date = "2025-01-01"
