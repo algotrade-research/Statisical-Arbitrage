@@ -168,6 +168,11 @@ The new set of parameters after optimization seem to be a better, although it do
 
 ## Out-of-sample Backtesting
 
+-**Run by**
+```
+python main.py out_sample use_data
+```
+
 -**Cumulative Return**
 
 ![Outsample Return](doc/img/outsample_return.png)
@@ -186,7 +191,10 @@ The new set of parameters after optimization seem to be a better, although it do
 | Information Ratio     | -0.27                 | n/a       |
 
 -**Overall**
-
+-**Run by**
+```
+python main.py overall use_data
+```
 ![Overall Return](doc/img/overall_metrics.png)
 
 ### Result Discussion
