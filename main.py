@@ -31,7 +31,9 @@ DEFAULT_PARAMS = {
 def load_parameters(mode):
     """Load parameters from a JSON file based on the mode, or use defaults."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    param_file = f"{mode}.json"
+    # Use 'in_sample' parameters for 'out_sample' and 'overall' if no specific file exists
+    param_mode = mode if mode in ["in_sample", "optimization"] else "optimization"
+    param_file = f"{param_mode}.json"
     param_path = os.path.join(base_dir, "parameters", param_file)
     
     try:
@@ -47,15 +49,16 @@ def load_parameters(mode):
 def parse_arguments():
     """Parse and validate command-line arguments."""
     if len(sys.argv) < 3:
-        print("Error: Please specify a mode ('initial' or 'optimization') and data usage ('use_data' or 'not_use_data').")
+        print("Error: Please specify a mode ('in_sample', 'optimization', 'out_sample', 'overall') and data usage ('use_data' or 'not_use_data').")
         print("Example: python main.py optimization use_data")
         sys.exit(1)
 
     mode = sys.argv[1].lower()
     data_usage = sys.argv[2].lower()
 
-    if mode not in ["initial", "optimization"]:
-        print("Error: Mode must be 'initial' or 'optimization'.")
+    valid_modes = ["in_sample", "optimization", "out_sample", "overall"]
+    if mode not in valid_modes:
+        print(f"Error: Mode must be one of {valid_modes}.")
         sys.exit(1)
     if data_usage not in ["use_data", "not_use_data"]:
         print("Error: Data usage must be 'use_data' or 'not_use_data'.")
@@ -77,8 +80,8 @@ def load_vn30_stocks(use_existing_data, csv_path):
     return vn30_stocks
 
 
-def run_analysis(vn30_stocks, params, use_existing_data):
-    """Run the backtest and calculate metrics."""
+def run_analysis(vn30_stocks, params, use_existing_data, mode):
+    """Run the backtest and calculate metrics based on the specified mode."""
     # Extract parameters
     estimation_window = params["estimation_window"]
     min_trading_days = params["min_trading_days"]
@@ -116,16 +119,18 @@ def run_analysis(vn30_stocks, params, use_existing_data):
     train_set = combined_returns_df[combined_returns_df.index < "2024-01-01"]
     test_set = combined_returns_df[combined_returns_df.index >= "2024-01-01"]
 
-    # Step 4: Calculate and display metrics
-    print("TRAIN SET")
-    calculate_metrics(train_set, average_fee_ratio, risk_free_rate=0.05)
+    # Step 4: Calculate and plot metrics based on mode
+    if mode in ["in_sample", "optimization"]:
+        print("TRAIN SET")
+        calculate_metrics(train_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+    elif mode == "out_sample":
+        print("TEST SET")
+        calculate_metrics(test_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+    elif mode == "overall":
+        print("OVERALL")
+        calculate_metrics(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True)
     
-    print("TEST SET")
-    calculate_metrics(test_set, average_fee_ratio, risk_free_rate=0.05)
-    
-    print("OVERALL")
-    calculate_metrics(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True)
-    
+    # Display monthly returns table (optional for all modes)
     monthly_returns = calculate_monthly_returns(combined_returns_df)
     print(pivot_monthly_returns_to_table(monthly_returns))
 
@@ -144,7 +149,7 @@ def main():
     vn30_stocks = load_vn30_stocks(use_existing_data, csv_path)
 
     # Run analysis
-    run_analysis(vn30_stocks, params, use_existing_data)
+    run_analysis(vn30_stocks, params, use_existing_data, mode)
 
 
 if __name__ == "__main__":
