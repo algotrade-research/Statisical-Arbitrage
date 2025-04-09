@@ -294,7 +294,7 @@ def plot_drawdown(drawdowns: pd.Series, title: str) -> None:
 
 
 
-def calculate_metrics_test(
+def calculate_metrics(
     returns_df: pd.DataFrame,
     total_fee_ratio,
     risk_free_rate: float = 0.05,
@@ -466,135 +466,6 @@ def calculate_metrics_test(
     if plotting:
         if use_benchmark:
             plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
-        plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
-
-    return metrics_df
-def calculate_metrics(returns_df: pd.DataFrame,total_fee_ratio, risk_free_rate: float = 0.05, trading_day: int = 252, freq: str = "D",plotting=False) -> pd.DataFrame:
-    """Calculate performance metrics, plot cumulative returns, and drawdown for portfolio returns vs a benchmark.
-
-    Note: Despite 'benchmark_df' in the docstring, benchmark data is fetched internally using get_etf_price('VN30', start, end).
-
-    Args:
-        returns_df (pd.DataFrame): Portfolio returns with 'Date' index and 'returns' column.
-        risk_free_rate (float): Annual risk-free rate. Defaults to 0.05.
-        trading_day (int): Number of trading days per year for annualization. Defaults to 252.
-        freq (str): Frequency of the data ('D' for daily). Defaults to 'D'.
-
-    Returns:
-        pd.DataFrame: Metrics for both Strategy and VN30, with percentages where applicable.
-
-    Raises:
-        ValueError: If returns_df is empty or if required columns are missing.
-    """
-    # Validate inputs
-    if returns_df.empty:
-        raise ValueError("returns_df is empty.")
-    if 'returns' not in returns_df.columns:
-        raise ValueError("returns_df must contain a 'returns' column.")
-
-    # Ensure datetime index
-    returns_df = returns_df.copy()
-    returns_df.index = pd.to_datetime(returns_df.index)
-
-    # Fetch benchmark data
-    start = returns_df.index[0].strftime('%Y-%m-%d')
-    end = returns_df.index[-1].strftime('%Y-%m-%d')
-    benchmark_df = get_etf_price('VN30', start, end)
-    benchmark_df.set_index('datetime', inplace=True)
-    benchmark_df.index = pd.to_datetime(benchmark_df.index)
-    if 'price' not in benchmark_df.columns:
-        raise ValueError("Benchmark DataFrame must contain a 'price' column.")
-    
-    # Align and calculate benchmark returns
-    benchmark_df = benchmark_df.reindex(returns_df.index, method='ffill')
-    benchmark_returns = benchmark_df['price'].pct_change().fillna(0)
-
-    # Calculate time length
-    time_length = (returns_df.index[-1] - returns_df.index[0]).days / 365.25
-
-    # Cumulative returns
-    strategy_cum_rets = calculate_cumulative_returns(returns_df['returns'])
-    benchmark_cum_rets = calculate_cumulative_returns(benchmark_returns)
-
-    # HPR
-    strategy_hpr = calculate_hpr(strategy_cum_rets)
-    benchmark_hpr = calculate_hpr(benchmark_cum_rets)
-    excess_hpr = calculate_excess_hpr(strategy_hpr, benchmark_hpr)
-
-    # Annualized returns
-    strategy_annual_return = calculate_annualized_return(strategy_hpr, time_length)
-    benchmark_annual_return = calculate_annualized_return(benchmark_hpr, time_length)
-    annual_excess_return = calculate_annual_excess_return(strategy_annual_return, benchmark_annual_return)
-
-    # Volatility
-    strategy_volatility = calculate_volatility(returns_df['returns'], trading_day)
-    benchmark_volatility = calculate_volatility(benchmark_returns, trading_day)
-
-    # Drawdowns and related metrics
-    strategy_drawdowns = calculate_drawdowns(strategy_cum_rets)
-    benchmark_drawdowns = calculate_drawdowns(benchmark_cum_rets)
-    strategy_max_drawdown = calculate_max_drawdown(strategy_drawdowns)
-    benchmark_max_drawdown = calculate_max_drawdown(benchmark_drawdowns)
-    strategy_longest_drawdown = calculate_longest_drawdown(strategy_cum_rets)
-    benchmark_longest_drawdown = calculate_longest_drawdown(benchmark_cum_rets)
-
-    # Risk-adjusted metrics
-    strategy_sharpe = calculate_sharpe_ratio(strategy_annual_return, strategy_volatility, risk_free_rate)
-    benchmark_sharpe = calculate_sharpe_ratio(benchmark_annual_return, benchmark_volatility, risk_free_rate)
-    strategy_downside_dev = calculate_downside_deviation(returns_df['returns'], trading_day)
-    benchmark_downside_dev = calculate_downside_deviation(benchmark_returns, trading_day)
-    strategy_sortino = calculate_sortino_ratio(strategy_annual_return, strategy_downside_dev)
-    benchmark_sortino = calculate_sortino_ratio(benchmark_annual_return, benchmark_downside_dev)
-
-    # Benchmark comparison metrics
-    beta = calculate_beta(returns_df['returns'], benchmark_returns)
-    alpha = calculate_alpha(strategy_annual_return, beta, benchmark_annual_return)
-    tracking_error = calculate_tracking_error(returns_df['returns'], benchmark_returns, trading_day)
-    information_ratio = calculate_information_ratio(annual_excess_return, tracking_error)
-
-    # VaR and cVaR
-    strategy_var = calculate_var(strategy_annual_return, strategy_volatility)
-    benchmark_var = calculate_var(benchmark_annual_return, benchmark_volatility)
-    strategy_cvar = calculate_cvar(strategy_annual_return, strategy_volatility)
-    benchmark_cvar = calculate_cvar(benchmark_annual_return, benchmark_volatility)
-
-    #Turnover ratio
-    turnover = calculate_turnover(total_fee_ratio)
-
-    # Compile metrics
-    metrics_data = {
-        'HPR (%)': [f"{strategy_hpr * 100:.2f}%", f"{benchmark_hpr * 100:.2f}%"],
-        'Excess HPR (%)': [f"{excess_hpr * 100:.2f}%", "-"],
-        'Annual Return (%)': [f"{strategy_annual_return * 100:.2f}%", f"{benchmark_annual_return * 100:.2f}%"],
-        'Annual Excess Return (%)': [f"{annual_excess_return * 100:.2f}%", "-"],
-        'Volatility (%)': [f"{strategy_volatility * 100:.2f}%", f"{benchmark_volatility * 100:.2f}%"],
-        'Maximum Drawdown (%)': [f"{strategy_max_drawdown * 100:.2f}%", f"{benchmark_max_drawdown * 100:.2f}%"],
-        'Longest Drawdown (days)': [f"{strategy_longest_drawdown:.0f}", f"{benchmark_longest_drawdown:.0f}"],
-        'Sharpe Ratio': [f"{strategy_sharpe:.2f}", f"{benchmark_sharpe:.2f}"],
-        'Sortino Ratio': [f"{strategy_sortino:.2f}", f"{benchmark_sortino:.2f}"],
-        'Information Ratio': [f"{information_ratio:.2f}", "-"],
-        'Beta': [f"{beta:.2f}", "-"],
-        'Alpha (%)': [f"{alpha * 100:.2f}%", "-"],
-        'Turnover Ratio (%)': [f"{turnover * 100:.2f}%", "-"],
-        'VaR (%)': [f"{strategy_var * 100:.2f}%", f"{benchmark_var * 100:.2f}%"],
-        'cVaR (%)': [f"{strategy_cvar * 100:.2f}%", f"{benchmark_cvar * 100:.2f}%"],
-        'VaR/cVaR': [f"{(strategy_cvar / strategy_var if strategy_var != 0 else np.nan):.2f}",
-                     f"{(benchmark_cvar / benchmark_var if benchmark_var != 0 else np.nan):.2f}"]
-    }
-    metrics_df = pd.DataFrame(metrics_data, index=['Strategy', 'VN30'])
-
-    # Prepare data for vertical table
-    table_data = []
-    for metric in metrics_data.keys():
-        table_data.append([metric, metrics_df.loc['Strategy', metric], metrics_df.loc['VN30', metric]])
-
-    # Print metrics in a vertical table format using tabulate
-    print("\nMetrics for Strategy and VN30 Benchmark\n" + "="*40)
-    print(tabulate(table_data, headers=['Metric', 'Strategy', 'VN30'], tablefmt='psql', stralign='left'))
-
-    # Plotting
-    if plotting:
-        plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
         plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
 
     return metrics_df

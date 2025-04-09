@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from utils.helper import generate_periods_df, run_backtest_for_periods
 from utils.calculate_metrics import (
-    calculate_metrics_test,
+    calculate_metrics,
     calculate_monthly_returns,
     pivot_monthly_returns_to_table,
 )
@@ -122,13 +122,13 @@ def run_analysis(vn30_stocks, params, use_existing_data, mode):
     # Step 4: Calculate and plot metrics based on mode
     if mode in ["in_sample", "optimization"]:
         print("TRAIN SET")
-        calculate_metrics_test(train_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(train_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
     elif mode == "out_sample":
         print("TEST SET")
-        calculate_metrics_test(test_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(test_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
     elif mode == "overall":
         print("OVERALL")
-        calculate_metrics_test(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True)
     
     # Display monthly returns table (optional for all modes)
     monthly_returns = calculate_monthly_returns(combined_returns_df)
