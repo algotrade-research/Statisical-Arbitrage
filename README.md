@@ -199,16 +199,16 @@ python main.py overall use_data
 ```
 | **Metric**            | **Strategy (Optimal)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | 10.42%                | 18.83%    |
-| Excess HPR            | -8.41%               | n/a       |
-| Annual Return         | 10.46%                | 18.9%     |
-| Annual Excess Return  | -8.45%               | n/a       |
-| Maximum Drawdown      | 5.39%                 | 8.38%     |
-| Longest Drawdown      | 187                   | 71        |
-| Turnover Ratio        | 9.72%                 | n/a       |
-| Sharpe Ratio          | 0.78                 | 0.97      |
-| Sortino Ratio         | 2.07                 | 1.67      |
-| Information Ratio     | -0.64                 | n/a       |
+| HPR                   | 8.15%                | -10.10%    |
+| Excess HPR            | 18.16%               | n/a       |
+| Annual Return         | 2.34%                | -3.06%     |
+| Annual Excess Return  |5.40%               | n/a       |
+| Maximum Drawdown      | 10.33%                 | 42.46%     |
+| Longest Drawdown      | 383                   | 762        |
+| Turnover Ratio        | 6.55%                 | n/a       |
+| Sharpe Ratio          | -0.41                 | -0.4      |
+| Sortino Ratio         | 0.36                 | -0.19      |
+| Information Ratio     | 0.29                 | n/a       |
 
 ### Result Discussion
 The result is good however when look closer to the graph, it still have high correlation with the index.
