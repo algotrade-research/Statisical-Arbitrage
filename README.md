@@ -98,19 +98,20 @@ python main.py initial use_data
 
 One run time cost about 7-15 minutes depending on using existing data or not and the computer power.
 ### Initial Metrics (08/2021–12/2023)
+(The turnover ratio in the code is calcualted slightly wrong so I mannually modified it)
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | -18.38%               | -20.80%   |
-| Excess HPR            | 2.42%                 | n/a       |
-| Annual Return         | -8.36%                | -9.54%    |
-| Annual Excess Return  | 1.18%                 | n/a       |
-| Maximum Drawdown      | 26.99%                | 42.46%    |
-| Longest Drawdown      | 477                   | 477       |
+| HPR                   | -1.38%               | -20.80%   |
+| Excess HPR            | 19.78%                 | n/a       |
+| Annual Return         | -0.44%                | -9.54%    |
+| Annual Excess Return  | 9.09%                 | n/a       |
+| Maximum Drawdown      | 8.01%                | 42.46%    |
+| Longest Drawdown      | 449                   | 477       |
 | Turnover Ratio        | 8.25%                 | n/a       |
-| Sharpe Ratio          | -1.31                 | -0.65     |
-| Sortino Ratio         | -0.86                 | -0.54     |
-| Information Ratio     | 0.06                  | n/a       |
+| Sharpe Ratio          | -0.68                 | -0.65     |
+| Sortino Ratio         | -0.06                 | -0.54     |
+| Information Ratio     | 0.45                  | n/a       |
 
 ### Result Discussion
 The strategy performs poorly and does not really have the market-neutral charecteristics. A possible explaination is that the hedging is not enough (beta around 0.2), and stocks usually falls larger than index when there is a sharpe downturn becuase in the index there are stocks that have small correlation with the index 
@@ -153,16 +154,16 @@ python main.py optimization use_data
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | -1.78%               | -24.29%   |
-| Excess HPR            | 22.51%                 | n/a       |
-| Annual Return         | -0.75%                | -11.01%    |
-| Annual Excess Return  | 10.26%                 | n/a       |
-| Maximum Drawdown      | 8.1%                | 42.46%    |
-| Longest Drawdown      | 422                   | 508       |
-| Turnover Ratio        | 7.53%                 | n/a       |
-| Sharpe Ratio          | -0.86                 | -0.74     |
+| HPR                   | -2.06%               | -24.29%   |
+| Excess HPR            | 22.23%                 | n/a       |
+| Annual Return         | -0.87%                | -11.01%    |
+| Annual Excess Return  | 10.14%                 | n/a       |
+| Maximum Drawdown      | 10.33%                | 42.46%    |
+| Longest Drawdown      | 355                   | 508       |
+| Turnover Ratio        |7.16%                 | n/a       |
+| Sharpe Ratio          | -0.92                 | -0.74     |
 | Sortino Ratio         | -0.11                 | -0.63     |
-| Information Ratio     | 0.51                  | n/a       |
+| Information Ratio     | 0.50                  | n/a       |
 ### Result Discussion
 The new set of parameters after optimization seem to be a better, although it do not generate positive profit. One causes maybe of the "high-beta" (0.2-0.4) of my strategy which makes the strategy move in correlation with the index.
 
@@ -179,16 +180,16 @@ python main.py out_sample use_data
 
 | **Metric**            | **Strategy (Optimal)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | 15.31%                | 18.83%    |
-| Excess HPR            | -3.52%               | n/a       |
-| Annual Return         | 15.37%                | 18.9%     |
-| Annual Excess Return  | -3.54%               | n/a       |
-| Maximum Drawdown      | 4.32%                 | 8.38%     |
-| Longest Drawdown      | 116                   | 71        |
-| Turnover Ratio        | 10.68%                 | n/a       |
-| Sharpe Ratio          | 1.47                 | 0.97      |
-| Sortino Ratio         | 3.28                 | 1.67      |
-| Information Ratio     | -0.27                 | n/a       |
+| HPR                   | 10.42%                | 18.83%    |
+| Excess HPR            | -8.41%               | n/a       |
+| Annual Return         | 10.46%                | 18.9%     |
+| Annual Excess Return  | -8.45%               | n/a       |
+| Maximum Drawdown      | 5.39%                 | 8.38%     |
+| Longest Drawdown      | 187                   | 71        |
+| Turnover Ratio        | 9.72%                 | n/a       |
+| Sharpe Ratio          | 0.78                 | 0.97      |
+| Sortino Ratio         | 2.07                 | 1.67      |
+| Information Ratio     | -0.64                 | n/a       |
 
 -**Overall**
 
@@ -196,7 +197,18 @@ python main.py out_sample use_data
 ```
 python main.py overall use_data
 ```
-![Overall Return](doc/img/overall_metrics.png)
+| **Metric**            | **Strategy (Optimal)** | **VN30**  |
+|-----------------------|------------------------|-----------|
+| HPR                   | 10.42%                | 18.83%    |
+| Excess HPR            | -8.41%               | n/a       |
+| Annual Return         | 10.46%                | 18.9%     |
+| Annual Excess Return  | -8.45%               | n/a       |
+| Maximum Drawdown      | 5.39%                 | 8.38%     |
+| Longest Drawdown      | 187                   | 71        |
+| Turnover Ratio        | 9.72%                 | n/a       |
+| Sharpe Ratio          | 0.78                 | 0.97      |
+| Sortino Ratio         | 2.07                 | 1.67      |
+| Information Ratio     | -0.64                 | n/a       |
 
 ### Result Discussion
 The result is good however when look closer to the graph, it still have high correlation with the index.
