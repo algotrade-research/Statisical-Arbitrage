@@ -349,6 +349,7 @@ def calculate_metrics(
             benchmark_df = pd.read_csv(csv_file, index_col=0, parse_dates=True)
             if 'price' not in benchmark_df.columns:
                 raise ValueError("vn30_prices.csv must contain a 'price' column.")
+            benchmark_df.set_index('datetime', inplace=True)
             benchmark_df.index = pd.to_datetime(benchmark_df.index)
         else:
             # Fetch benchmark data (assuming get_etf_price is available)
@@ -464,9 +465,8 @@ def calculate_metrics(
 
     # Plotting
     if plotting:
-        if use_benchmark:
-            plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
-        plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
+        plot_cumulative_returns(strategy_cum_rets, benchmark_cum_rets)
+        # plot_drawdown(strategy_drawdowns, "DRAWDOWN (Strategy)")
 
     return metrics_df
 

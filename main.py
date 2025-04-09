@@ -80,7 +80,7 @@ def load_vn30_stocks(use_existing_data, csv_path):
     return vn30_stocks
 
 
-def run_analysis(vn30_stocks, params, use_existing_data, mode):
+def run_analysis(vn30_stocks, params, use_existing_data, mode,monthly=False):
     """Run the backtest and calculate metrics based on the specified mode."""
     # Extract parameters
     estimation_window = params["estimation_window"]
@@ -122,17 +122,18 @@ def run_analysis(vn30_stocks, params, use_existing_data, mode):
     # Step 4: Calculate and plot metrics based on mode
     if mode in ["in_sample", "optimization"]:
         print("TRAIN SET")
-        calculate_metrics(train_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(train_set, average_fee_ratio, risk_free_rate=0.05, plotting=True,use_existing_data=use_existing_data)
     elif mode == "out_sample":
         print("TEST SET")
-        calculate_metrics(test_set, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(test_set, average_fee_ratio, risk_free_rate=0.05, plotting=True, use_existing_data=use_existing_data)
     elif mode == "overall":
         print("OVERALL")
-        calculate_metrics(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True)
+        calculate_metrics(combined_returns_df, average_fee_ratio, risk_free_rate=0.05, plotting=True, use_existing_data=use_existing_data)
     
     # Display monthly returns table (optional for all modes)
-    monthly_returns = calculate_monthly_returns(combined_returns_df)
-    print(pivot_monthly_returns_to_table(monthly_returns))
+    if monthly==True:
+        monthly_returns = calculate_monthly_returns(combined_returns_df)
+        print(pivot_monthly_returns_to_table(monthly_returns))
 
 
 def main():
