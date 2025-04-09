@@ -74,7 +74,7 @@ python load_data.py
 -**Run by**
 (Use existing data)
 ```
-python main.py initial use_data
+python main.py in_sample use_data
 ```
 
 -**Parameters**
