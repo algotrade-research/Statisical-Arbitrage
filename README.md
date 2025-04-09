@@ -191,6 +191,7 @@ python main.py out_sample use_data
 | Information Ratio     | -0.27                 | n/a       |
 
 -**Overall**
+
 -**Run by**
 ```
 python main.py overall use_data
