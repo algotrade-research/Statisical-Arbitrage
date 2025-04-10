@@ -102,7 +102,7 @@ One run time cost about 7-15 minutes depending on using existing data or not and
 
 | **Metric**            | **Strategy (Initial)** | **VN30**  |
 |-----------------------|------------------------|-----------|
-| HPR                   | -1.38%               | -20.80%   |
+| HPR                   | -1.03%               | -20.80%   |
 | Excess HPR            | 19.78%                 | n/a       |
 | Annual Return         | -0.44%                | -9.54%    |
 | Annual Excess Return  | 9.09%                 | n/a       |
